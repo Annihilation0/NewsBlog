@@ -1,9 +1,13 @@
 ﻿using System;
+using NewsBlog.Models;
+using Microsoft.EntityFrameworkCore;
+
+
 
 /// <summary>
 /// Summary description for Class1
 /// </summary>
-public class public class BlogDbContext : DbContext
+public class BlogDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
@@ -33,4 +37,5 @@ public class public class BlogDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+    
 }
