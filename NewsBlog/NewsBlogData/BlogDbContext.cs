@@ -8,10 +8,11 @@ using NewsBlog.NewsBlogData;
 /// </summary>
 public class BlogDbContext : DbContext
 {
-    public BlogDbContext(DbContextOptions<BlogDbContext> options)
-    : base(options)
+
+    public BlogDbContext(DbContextOptions options) : base(options)
     {
     }
+
 
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
