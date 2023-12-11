@@ -1,8 +1,11 @@
-﻿namespace NewsBlog.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NewsBlog.NewsBlogData
 {
     public class News
     {
         public int NewsId { get; set; }
+        [Key]
         public string? Title { get; set; }
         public string? Content { get; set; }
         public DateTime Published { get; set; }
