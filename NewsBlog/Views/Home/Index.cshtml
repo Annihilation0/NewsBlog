@@ -1,19 +1,10 @@
-﻿@model IEnumerable<NewsBlog.ViewModel.NewsViewModel>
+﻿
 
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@foreach(var news in Model)
-{
-    <h1>@news.Title</h1>
-    <p class="m-2">@news.Published</p>
-    <p class="m-2">@news.Author</p>
-    <p class="m-2">@news.Categories</p>
-    <img src=@news.ResourcePath alt="Please load image" width="500" height="500" />
-    <p>@news.Content</p>
-    <p class="m-2">@news.Published</p>
-}
+
 
 

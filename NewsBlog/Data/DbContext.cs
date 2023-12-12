@@ -18,8 +18,11 @@ public class DbContext : Microsoft.EntityFrameworkCore.DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Здесь можно настроить сложные связи, индексы и т.д.
-        // Например, для связи многие ко многим между News и Categories
+        /*--------------------------------------
+         Здесь можно настроить сложные связи, индексы и т.д.
+        Например, для News, Categories и Comment
+        --------------------------------------*/
+        // Связь многие ко многим между News и Categories
         modelBuilder.Entity<News>()
             .HasMany(n => n.Categories)
             .WithMany(c => c.News)

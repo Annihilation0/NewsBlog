@@ -17,27 +17,12 @@ namespace NewsBlog.Controllers
             _logger = logger;
         }
         */
-        private readonly DbContext dbContext;
-        public HomeController(DbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
+     
 
         public IActionResult Index()
         {
-            var news = this.dbContext.News.Include(n => n.Categories).Select(n => new NewsViewModel
-            { 
-                Title = n.Title,
-                Content = n.Content,
-                Published = n.Published,
-                Author = n.Author,
-                ResourcePath = n.ResourcePath,
-                Categories = n.Categories,
-                Comments = n.Comments
 
-        });
-            return View(news);
-            //return View();
+            return View();
         }
 
         public IActionResult Privacy()
