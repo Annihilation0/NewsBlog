@@ -34,6 +34,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-
+/*--------------------------------------
+Заполнение базы данных
+--------------------------------------*/
 app.Seed();
 app.Run();

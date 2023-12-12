@@ -1,6 +1,4 @@
 ﻿@model IEnumerable<NewsBlog.ViewModel.NewsViewModel>
-
-
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -25,7 +23,7 @@
             <div class="blog-card">
                 <img src=@news.ResourcePath alt="Please load image" />
                 <div class="blog-content">
-                    <h2  class="blog-title">@news.Title</h2>
+                    <h2 class="blog-title">@news.Title</h2>
                     <p class="blog-date">@news.Author</p>
                     <p class="blog-date">@news.Published</p>
                     <p class="blog-date">@news.Categories</p>
@@ -37,9 +35,9 @@
 
     }
 
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
 </body>
 </html>
