@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NewsBlog.NewsBlogData;
-using static BlogDbContext;
+using static DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Получаем строку для подключения из конфигураций
-builder.Services.AddDbContext<BlogDbContext>(options =>
+builder.Services.AddDbContext<DbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     );
 

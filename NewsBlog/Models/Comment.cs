@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NewsBlog.NewsBlogData
+namespace NewsBlog.Models
 {
     public class Comment
     {

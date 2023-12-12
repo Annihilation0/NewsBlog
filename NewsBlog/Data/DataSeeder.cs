@@ -1,4 +1,6 @@
 ﻿
+using NewsBlog.Models;
+
 namespace NewsBlog.NewsBlogData
 {
     public static class DataSeeder
@@ -9,13 +11,13 @@ namespace NewsBlog.NewsBlogData
         public static void Seed(this IHost host)
         {
             using var scope = host.Services.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+            using var context = scope.ServiceProvider.GetRequiredService<DbContext>();
 
             context.Database.EnsureCreated();
             AddNews(context);
         }
 
-        private static void AddNews(BlogDbContext context)
+        private static void AddNews(DbContext context)
         {
             /*--------------------------------------
             Заполнение базы данных 

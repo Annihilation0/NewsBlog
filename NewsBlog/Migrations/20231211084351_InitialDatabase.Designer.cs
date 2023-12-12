@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace NewsBlog.Migrations
 {
-    [DbContext(typeof(BlogDbContext))]
+    [DbContext(typeof(DbContext))]
     [Migration("20231211084351_InitialDatabase")]
     partial class InitialDatabase
     {

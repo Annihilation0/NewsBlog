@@ -1,4 +1,4 @@
-﻿using NewsBlog.NewsBlogData;
+﻿using NewsBlog.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewsBlog.ViewModel

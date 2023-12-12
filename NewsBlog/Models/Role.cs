@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NewsBlog.NewsBlogData
+namespace NewsBlog.Models
 {
     public class Role
     {

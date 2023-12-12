@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NewsBlog.NewsBlogData
+namespace NewsBlog.Models
 {
     public class User
     {
@@ -14,7 +14,7 @@ namespace NewsBlog.NewsBlogData
         public string PasswordSalt { get; set; }
         [ForeignKey("Role")]
         public int RoleId { get; set; }
-        
+
         public virtual Role Role { get; set; }
         public virtual ICollection<News> News { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

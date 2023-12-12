@@ -1,24 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
-using NewsBlog.NewsBlogData;
 using NewsBlog.ViewModel;
 using System.Diagnostics;
 
 namespace NewsBlog.Controllers
 {
-    public class HomeController : Controller
+    public class NewsController : Controller
     {
-        /*
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-        */
         private readonly DbContext dbContext;
-        public HomeController(DbContext dbContext)
+        public NewsController(DbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -26,7 +17,7 @@ namespace NewsBlog.Controllers
         public IActionResult Index()
         {
             var news = this.dbContext.News.Include(n => n.Categories).Select(n => new NewsViewModel
-            { 
+            {
                 Title = n.Title,
                 Content = n.Content,
                 Published = n.Published,
@@ -35,9 +26,8 @@ namespace NewsBlog.Controllers
                 Categories = n.Categories,
                 Comments = n.Comments
 
-        });
+            });
             return View(news);
-            //return View();
         }
 
         public IActionResult Privacy()
