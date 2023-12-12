@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using NewsBlog.NewsBlogData;
 using static BlogDbContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,5 +35,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-
+app.Seed();
 app.Run();
