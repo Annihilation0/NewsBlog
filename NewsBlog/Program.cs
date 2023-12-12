@@ -32,7 +32,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=News}/{action=AllNews}/{id?}");
 
 /*--------------------------------------
 Заполнение базы данных

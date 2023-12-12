@@ -7,8 +7,8 @@ namespace NewsBlog.Models
     {
         [Key]
         public int NewsId { get; set; }
-        public string? Title { get; set; }
-        public string? Content { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
         public DateTime Published { get; set; }
         [ForeignKey("Author")]
         public int AuthorId { get; set; }

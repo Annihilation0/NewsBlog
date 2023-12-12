@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
-
-/// <summary>
-/// Summary description for Class1
-/// </summary>
 public class DbContext : Microsoft.EntityFrameworkCore.DbContext
 {
-
     public DbContext(DbContextOptions options) : base(options)
     {
     }

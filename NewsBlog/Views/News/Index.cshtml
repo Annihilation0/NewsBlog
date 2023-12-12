@@ -1,45 +1,15 @@
-﻿@model IEnumerable<NewsBlog.ViewModel.NewsViewModel>
-
-
+﻿
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Новости";
 }
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/NewsBlog.styles.css" asp-append-version="true" />
-</head>
+
 <body>
+    <div class="blog-cards">
+      
+    </div>
 
-    @foreach (var news in Model)
-    {
-        /*--------------------------------------
-        Отображение новости html
-        --------------------------------------*/
-        <div class="blog-cards">
-            <div class="blog-card">
-                <img src=@news.ResourcePath alt="Please load image" />
-                <div class="blog-content">
-                    <h2  class="blog-title">@news.Title</h2>
-                    <p class="blog-date">@news.Author</p>
-                    <p class="blog-date">@news.Published</p>
-                    <p class="blog-date">@news.Categories</p>
-                    <p class="blog-description">@news.Content</p>
-                    <a href="Home" class="read-more">Читать</a>
-                </div>
-            </div>
-        </div>
 
-    }
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    
 </body>
 </html>

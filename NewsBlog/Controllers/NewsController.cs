@@ -14,50 +14,119 @@ namespace NewsBlog.Controllers
         {
             this.dbContext = dbContext;
         }
-
         /*--------------------------------------
-        Отображение всех новостей из контекста базы данных
+        Отображение всех новостей из контекста
+        базы данных
         --------------------------------------*/
         public IActionResult Index()
+        {
+            
+            return View();
+        }
+        public IActionResult AllNews()
         {
             var news = getAllNews(this.dbContext);
             return View(news);
         }
-
+        /*--------------------------------------
+        PartialView для отображения результата
+        поиска 
+        --------------------------------------*/
         public IActionResult SearchNews(string search)
         {
             var searchingNews = SearchNewsByTitle(this.dbContext, search);
             return PartialView(searchingNews);
 
         }
-
-        private IQueryable<NewsViewModel> SearchNewsByTitle(DbContext dbContext, string search)
+        public IActionResult SearchByCategoryNews(string category)
         {
-             var res = dbContext.News
-                .Include(news => news.Categories)
-                .Include(news => news.Author)
-                .Select(news => new NewsViewModel
-                {
-                    Title = news.Title,
-                    Content = news.Content,
-                    Published = news.Published,
-                    Author = news.Author.FirstName + " " + news.Author.LastName,
-                    ResourcePath = news.ResourcePath,
-                    Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
-                    Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
-                }).Where(news => news.Title.Contains(search));
+            var searchingNews = SearchByCategoryNews(this.dbContext, category);
+            return PartialView(searchingNews);
 
+        }
+        /*--------------------------------------
+        PartialView для отображения новости с
+        заданным newsId
+        --------------------------------------*/
+        public IActionResult ReadNews(int newsId)
+        {
+            var searchingNews = SearchNewsById(this.dbContext, newsId);
+            return PartialView(searchingNews);
+
+        }
+        /*--------------------------------------
+        Получение новости из контекста базы данных
+        по идентификатору newsId
+        --------------------------------------*/
+        private IQueryable<NewsViewModel> SearchNewsById(DbContext dbContext, int newsId)
+        {
+            var res = dbContext.News
+               .Include(news => news.Categories)
+               .Include(news => news.Author)
+               .Select(news => new NewsViewModel
+               {
+                   NewsId = news.NewsId,
+                   Title = news.Title,
+                   Content = news.Content,
+                   Published = news.Published,
+                   Author = news.Author.FirstName + " " + news.Author.LastName,
+                   ResourcePath = news.ResourcePath,
+                   //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
+                   Categories = news.Categories.Select(category => category.CategoryName).ToList(),
+                   Comments = string.Join(" ", news.Comments.Select(comment => comment.Content))
+               })
+               .Where(news => news.NewsId == newsId);
             return res;
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
         /*--------------------------------------
-        Получение всех новостей из контекста базы данных
+        Получение всех новостей из контекста базы данных,
+        заголовок которых содержит в себе строку search
+        --------------------------------------*/
+        private IQueryable<NewsViewModel> SearchNewsByTitle(DbContext dbContext, string search)
+        {
+            search ??= "";
+            var res = dbContext.News
+               .Include(news => news.Categories)
+               .Include(news => news.Author)
+               .Select(news => new NewsViewModel
+               {
+                   NewsId = news.NewsId,
+                   Title = news.Title,
+                   Content = news.Content,
+                   Published = news.Published,
+                   Author = news.Author.FirstName + " " + news.Author.LastName,
+                   ResourcePath = news.ResourcePath,
+                   //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
+                   Categories = news.Categories.Select(category => category.CategoryName).ToList(),
+                   Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
+               })
+               .Where(news => news.Title.Contains(search));
+            return res;
+        }
+        private IQueryable<NewsViewModel> SearchByCategoryNews(DbContext dbContext, string category)
+        {
+            category ??= "";
+            var res = dbContext.News
+               .Include(news => news.Categories)
+               .Include(news => news.Author)
+               .Select(news => new NewsViewModel
+               {
+                   NewsId = news.NewsId,
+                   Title = news.Title,
+                   Content = news.Content,
+                   Published = news.Published,
+                   Author = news.Author.FirstName + " " + news.Author.LastName,
+                   ResourcePath = news.ResourcePath,
+                   //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
+                   Categories = news.Categories.Select(category => category.CategoryName).ToList(),
+                   Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
+               })
+               .Where(news => news.Categories.Contains(category));
+            return res;
+        }
+        /*--------------------------------------
+        Получение всех новостей из контекста
+        базы данных
         --------------------------------------*/
         private IQueryable<NewsViewModel> getAllNews(DbContext context)
         {
@@ -65,17 +134,25 @@ namespace NewsBlog.Controllers
                 .Include(news => news.Categories)
                 .Include(news => news.Author)
                 .Select(news => new NewsViewModel
-            {
-                Title = news.Title,
-                Content = news.Content,
-                Published = news.Published,
-                Author = news.Author.FirstName + " " + news.Author.LastName,
-                ResourcePath = news.ResourcePath,
-                Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
-                Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
+                {
+                    NewsId = news.NewsId,
+                    Title = news.Title,
+                    Content = news.Content,
+                    Published = news.Published,
+                    Author = news.Author.FirstName + " " + news.Author.LastName,
+                    ResourcePath = news.ResourcePath,
+                    //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
+                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
+                    Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
                 });
 
             return news;
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

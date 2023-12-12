@@ -4,13 +4,7 @@
 }
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/NewsBlog.styles.css" asp-append-version="true" />
-</head>
+
 <body>
     <div class="blog-cards">
         @foreach (var news in Model)
@@ -26,16 +20,15 @@
                     <p class="blog-date">@news.Published</p>
                     @foreach (var category in @news.Categories)
                     {
-                        <p class="blog-category">@category</p>
+                        <a class="blog-category" OnClick="SearchByCategoryNews('@category')">@category</a>
                     }
                     <p class="blog-description">@news.Content</p>
-                    <a class="read-more" id="readNews" OnClick="ReadNews(@news.NewsId)">Читать</a>
+                    <a class="read-more" id="readNews" value=@news.NewsId OnClick="ReadNews(@news.NewsId)">Читать</a>
                 </div>
             </div>
         }
     </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    
 </body>
 </html>
