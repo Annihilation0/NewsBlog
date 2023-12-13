@@ -1,5 +1,4 @@
 ﻿using NewsBlog.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewsBlog.ViewModel
 {
@@ -12,8 +11,8 @@ namespace NewsBlog.ViewModel
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
         public Role Role { get; set; }
-        public ICollection<News> News { get; set; }
-        public ICollection<Comment> Comments { get; set; }
+        public List<News> News { get; set; }
+        public List<Comment> Comments { get; set; }
 
     }
 }

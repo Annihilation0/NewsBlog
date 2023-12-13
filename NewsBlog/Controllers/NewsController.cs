@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
 using NewsBlog.ViewModel;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 
 namespace NewsBlog.Controllers
@@ -49,7 +50,7 @@ namespace NewsBlog.Controllers
         --------------------------------------*/
         public IActionResult ReadNews(int newsId)
         {
-           //var searchingNews = SearchNewsById(this.dbContext, newsId);
+           //var searchingNews = SearchNewsById(this.Context, newsId);
            // return PartialView(searchingNews);
 
             var searchingNews = new NewsAndCommentViewModel();
@@ -122,8 +123,12 @@ namespace NewsBlog.Controllers
                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
                    Comments = news.Comments,
                })
-               .Where(news => news.Title.Contains(search));
+               .Where(news => news.Title.ToLower().Contains(search.ToLower()));
             return res;
+        }
+        private bool ContainsCaseInsensitive(string source, string substring)
+        {
+            return source?.IndexOf(substring, StringComparison.OrdinalIgnoreCase) > -1;
         }
         private IQueryable<NewsViewModel> SearchByCategoryNews(DbContext dbContext, string category)
         {
@@ -171,10 +176,7 @@ namespace NewsBlog.Controllers
             return news;
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+
+  
     }
 }

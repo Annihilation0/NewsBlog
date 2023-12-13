@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <div class="blog-cards">
+        @foreach (var user in Model)
+        {
+        <div class="blog-card">
+            <div class="blog-content">
+                <h2 class="blog-title">@user.UserName</h2>
+                <p class="blog-author">@user.FirstName</p>
+                <p class="blog-author">@user.LastName</p>
+                <p class="blog-author">@user.Role.RoleName</p>
+                @foreach (var news in @user.News)
+                {
+                    <a class="blog-author">@news.NewsId</a>
+                }
+                @foreach (var comment in @user.Comments)
+                {
+                    <a class="blog-author">@comment.CommentId)</a>
+                }
+
+            </div>
+        </div>
+        }
+    </div>
+</body>
+</html>

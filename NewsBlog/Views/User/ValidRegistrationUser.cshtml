@@ -1,0 +1,25 @@
+﻿@model NewsBlog.ViewModel.RegistrationDataUserViewModel
+@{
+    ViewData["Title"] = "Пользователь";
+    var userName = Model.UserName;
+    var firstName = Model.FirstName;
+    var lastName = Model.LastName;
+    var password = Model.Password;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <div class="blog-cards">
+        <div class="registration-card-container">
+            <div class="registration-card">
+                <div class="registration-content ">
+                    <p class="blog-author">Вы зарегистрированы</p>
+                    <a href="/News/AllNews" class="read-more" style="width:170px;">Назад</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

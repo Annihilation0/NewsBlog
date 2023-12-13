@@ -21,7 +21,6 @@ function SearchNews() {
     Передаем строку поиска в контроллер
     --------------------------------------*/
     let value = document.getElementById('searchNews').value
-
     $.ajax({
         type: "POST",
         // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
@@ -35,10 +34,7 @@ function SearchNews() {
         }
     });
 }
-
-//document.getElementById('readNews').addEventListener("click", ReadNews());
 function ReadNews(newsId) {
-
     let value = newsId;
     $.ajax({
         type: "POST",
@@ -53,9 +49,7 @@ function ReadNews(newsId) {
         }
     });
 }
-
 function SearchByCategoryNews(category) {
-    
     let value = category;
     let categories = document.getElementsByClassName("blog-category");
     $.ajax({
@@ -77,4 +71,29 @@ function SearchByCategoryNews(category) {
     });
     
     
+}
+function RegistrationUser() {
+    let userName = document.getElementById("userName").value;
+    let firstName = document.getElementById("firstName").value;
+    let lastName = document.getElementById("lastName").value;
+    let password = document.getElementById("password").value;
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/User/RegistrationUser",
+        // Attach the value to a parameter called search
+        data: {
+            userName,
+            firstName,
+            lastName,
+            password
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
+
+
 }

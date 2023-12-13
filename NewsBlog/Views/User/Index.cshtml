@@ -2,14 +2,28 @@
 @{
     ViewData["Title"] = "Пользователь";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 
 <body>
     <div class="blog-cards">
-      
+        <div class="registration-card-container">
+            <div class="registration-card">
+                <div class="registration-content ">
+                    <p class="blog-author">Введите логин</p>
+                    <input id="userName" class="blog-author" placeholder="Логин" /><br />
+                    <p class="blog-author">Введите имя</p>
+                    <input id="firstName" class="blog-author" placeholder="Имя" /><br />
+                    <p class="blog-author">Введите фамилию</p>
+                    <input id="lastName" class="blog-author" placeholder="Фамилия" /><br />
+                    <p class="blog-author">Введите пароль</p>
+                    <input id="password" class="blog-author" type="password" placeholder="Пароль" /><br /><br />
+                    <a class="read-more" id="RegistrationUser" OnClick="RegistrationUser()">Зарегистрироваться</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-
 </body>
 </html>
+

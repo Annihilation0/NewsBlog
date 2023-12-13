@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace NewsBlog.Views.User
 {
-    public class IndexModel : PageModel
+    public class ValidRegistrationUserModel : PageModel
     {
         public void OnGet()
         {

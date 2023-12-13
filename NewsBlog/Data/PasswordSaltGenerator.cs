@@ -14,7 +14,7 @@ namespace NewsBlog.NewsBlogData
             byte[] saltBytes = new byte[size];
 
             // Используем криптографический генератор случайных чисел для заполнения буфера
-            using (var provider = new RNGCryptoServiceProvider())
+            using (var provider = RandomNumberGenerator.Create())
             {
                 provider.GetBytes(saltBytes);
             }
