@@ -1,5 +1,4 @@
 ﻿using NewsBlog.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewsBlog.ViewModel
 {
@@ -12,7 +11,7 @@ namespace NewsBlog.ViewModel
         public string? ResourcePath { get; set; }
         public string Author { get; set; }
         public List<string> Categories { get; set; }
-        public string Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
     }
 }

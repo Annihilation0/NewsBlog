@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
 using NewsBlog.ViewModel;
-using System;
 using System.Diagnostics;
 
 namespace NewsBlog.Controllers
@@ -50,9 +49,32 @@ namespace NewsBlog.Controllers
         --------------------------------------*/
         public IActionResult ReadNews(int newsId)
         {
-            var searchingNews = SearchNewsById(this.dbContext, newsId);
-            return PartialView(searchingNews);
+           //var searchingNews = SearchNewsById(this.dbContext, newsId);
+           // return PartialView(searchingNews);
 
+            var searchingNews = new NewsAndCommentViewModel();
+
+            searchingNews.News = SearchNewsById(this.dbContext, newsId).First();
+            searchingNews.Comments = SearchCommentOfNews(this.dbContext, searchingNews.News.NewsId);
+
+            return PartialView(searchingNews);
+        }
+        private IQueryable<CommentViewModel> SearchCommentOfNews(DbContext dbContext, int newsId)
+        {
+            var res = dbContext.Comments
+               .Include(comment => comment.Author)
+               .Include(comment => comment.News)
+               .Select(comment => new CommentViewModel
+               {
+                   CommentId = comment.CommentId,
+                   Published = comment.Published,
+                   Content = comment.Content,
+                   Author = comment.Author.FirstName + " " + comment.Author.LastName,
+                   News = comment.News
+               })
+               .Where(comment => comment.News.NewsId.Equals(newsId));
+
+            return res;
         }
         /*--------------------------------------
         Получение новости из контекста базы данных
@@ -73,9 +95,9 @@ namespace NewsBlog.Controllers
                    ResourcePath = news.ResourcePath,
                    //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
-                   Comments = string.Join(" ", news.Comments.Select(comment => comment.Content))
+                   Comments = news.Comments,
                })
-               .Where(news => news.NewsId == newsId);
+               .Where(news => news.NewsId.Equals(newsId));
             return res;
         }
         /*--------------------------------------
@@ -98,7 +120,7 @@ namespace NewsBlog.Controllers
                    ResourcePath = news.ResourcePath,
                    //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
-                   Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
+                   Comments = news.Comments,
                })
                .Where(news => news.Title.Contains(search));
             return res;
@@ -119,7 +141,7 @@ namespace NewsBlog.Controllers
                    ResourcePath = news.ResourcePath,
                    //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
-                   Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
+                   Comments = news.Comments
                })
                .Where(news => news.Categories.Contains(category));
             return res;
@@ -143,7 +165,7 @@ namespace NewsBlog.Controllers
                     ResourcePath = news.ResourcePath,
                     //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
                     Categories = news.Categories.Select(category => category.CategoryName).ToList(),
-                    Comments = string.Join(" ", news.Comments.Select(comment => comment.Content)),
+                    Comments = news.Comments,
                 });
 
             return news;

@@ -55,12 +55,9 @@ function ReadNews(newsId) {
 }
 
 function SearchByCategoryNews(category) {
-    let categories = document.getElementsByClassName("blog-category")
-    for (i = 0; i < categories.length; i++) {
-        if (categories.item(i).innerHTML == category)
-            categories.item(i).classList.add('blog-category-selected')
-    }
+    
     let value = category;
+    let categories = document.getElementsByClassName("blog-category");
     $.ajax({
         type: "POST",
         // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
@@ -69,8 +66,15 @@ function SearchByCategoryNews(category) {
         data: { category: value },
         datatype: "html",
         success: function (data) {
+            
+            for (i = 0; i < categories.length; i++) {
+                if (categories.item(i).innerHTML == category)
+                    categories.item(i).classList.add('blog-category-selected')
+            }
             // Insert the returned search results html into the result element 
             $('#searchNewsResult').html(data);
         }
     });
+    
+    
 }

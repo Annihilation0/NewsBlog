@@ -1,6 +1,11 @@
-﻿@model IEnumerable<NewsBlog.ViewModel.NewsViewModel>
+﻿@model NewsBlog.ViewModel.NewsAndCommentViewModel
 @{
     ViewData["Title"] = "Новости";
+    var news = Model.News;
+    var comments = Model.Comments;
+    /*--------------------------------------
+    Отображение одной новости с комментариями
+    --------------------------------------*/
 }
 
 <!DOCTYPE html>
@@ -8,25 +13,36 @@
 
 <body>
     <div class="blog-cards">
-        @foreach (var news in Model)
-        {
-            /*--------------------------------------
-            Отображение новости html
-            --------------------------------------*/
-            <div class="blog-card">
-                <img src=@news.ResourcePath alt="Please load image" />
-                <div class="blog-content">
-                    <h2 class="blog-title">@news.Title</h2>
-                    <p class="blog-date">@news.Author</p>
-                    <p class="blog-date">@news.Published</p>
-                    @foreach (var category in @news.Categories)
-                    {
-                        <a class="blog-category" OnClick="SearchByCategoryNews('@category')">@category</a>
-                    }
-                    <p class="blog-read-description">@news.Content</p>
-                </div>
+        <div class="blog-card">
+            <img src=@news.ResourcePath alt="Please load image" />
+            <div class="blog-content">
+                <h2 class="blog-title">@news.Title</h2>
+                <p class="blog-author">@news.Author</p>
+                <p class="blog-date">@news.Published</p>
+                @foreach (var category in @news.Categories)
+                {
+                    <a class="blog-category" OnClick="SearchByCategoryNews('@category')">@category</a>
+                }
+                <p class="blog-read-description">@news.Content</p>
             </div>
-        }
+        </div>
+
+    </div>
+    <div class="blog-comment-cards">
+    <h2 class="blog-title">Комментарии</h2>
+    </div>
+    <div class="blog-comment-cards">
+   
+        <div class="blog-comment-card">
+            <div class="blog-content">
+                @foreach (var comment in comments)
+                {
+                    <p class="blog-comment-author">@comment.Author.ToString()</p>
+                    <p class="blog-date">@comment.Published.ToString()</p>
+                    <p class="blog-comment-description">@comment.Content.ToString()</p>
+                }
+            </div>
+        </div>
     </div>
 
 </body>
