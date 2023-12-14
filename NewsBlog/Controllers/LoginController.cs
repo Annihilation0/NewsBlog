@@ -82,7 +82,7 @@ namespace NewsBlog.Controllers
         {
             var users = context.Users;
             if(users == null) return false;
-            var res = users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).First();
+            var res = users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).FirstOrDefault();
             if(res == null) return false;
             return true;
         }

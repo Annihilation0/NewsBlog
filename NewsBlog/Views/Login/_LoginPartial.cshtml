@@ -1,5 +1,8 @@
 ﻿@model NewsBlog.ViewModel.LoginDataUserViewModel
 @{
+    /*-----------------------------------------
+     Частичное представление входа пользователя
+     -----------------------------------------*/
     ViewData["Title"] = "Вход";
     var userName = Model.UserName;
     var password = Model.Password;
@@ -11,7 +14,7 @@
     @if (!string.IsNullOrWhiteSpace(errorMessage))
     {
         <div class="error-message">
-            errorMessage
+            @errorMessage
         </div>
     }
     <div class="blog-cards">
@@ -22,7 +25,7 @@
                     <input id="userName" class="blog-text" placeholder="Логин" value="@userName" /><br />
                     <p class="blog-text">Введите пароль</p>
                     <input id="password" class="blog-text" type="password" placeholder="Пароль" value="@password" /><br />
-                    <a class="read-more" id="LoginUser" OnClick="LoginUser()">Войти</a>
+                    <a class="read-more" id="LoginUser" OnClick="LoginUser()" style="width:100%;">Войти</a>
                 </div>
             </div>
         </div>
