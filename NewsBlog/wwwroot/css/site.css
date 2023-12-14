@@ -103,7 +103,7 @@ img {
 }
 .registration-card {
     width: 200px;
-    height: 370px;
+    height: 350px;
     margin: 5px;
     background-color: #f9f9f9;
     box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
@@ -185,6 +185,15 @@ img {
         color: #fff;
         cursor: pointer;
     }
+
+
+.blog-text {
+    margin-top: 5px;
+    color: inherit;
+    font-weight: 300;
+    margin-bottom: 0px;
+}
+
 .search-category-detail {
     display: flex;
     flex-direction: row;

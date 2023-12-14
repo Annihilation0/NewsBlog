@@ -3,15 +3,22 @@
     ViewData["Title"] = "Вход";
     var userName = Model.UserName;
     var password = Model.Password;
+    var errorMessage = Model.ErrorMessage;
 }
 <!DOCTYPE html>
 <html lang="en">
 <body>
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="error-message">
+            errorMessage
+        </div>
+    }
     <div class="blog-cards">
         <div class="registration-card-container">
             <div class="registration-card">
                 <div class="registration-content ">
-                    <p class="blog-text" style="color: red">Введите логин</p>
+                    <p class="blog-text">Введите логин</p>
                     <input id="userName" class="blog-text" placeholder="Логин" value="@userName" /><br />
                     <p class="blog-text">Введите пароль</p>
                     <input id="password" class="blog-text" type="password" placeholder="Пароль" value="@password" /><br />
