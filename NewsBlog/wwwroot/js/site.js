@@ -80,7 +80,7 @@ function RegistrationUser() {
     $.ajax({
         type: "POST",
         // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
-        url: "/User/RegistrationUser",
+        url: "/Registration/RegistrationUser",
         // Attach the value to a parameter called search
         data: {
             userName,

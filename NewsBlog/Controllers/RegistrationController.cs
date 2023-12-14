@@ -6,11 +6,11 @@ using NewsBlog.ViewModel;
 
 namespace NewsBlog.Controllers
 {
-    public class UserController : Controller
+    public class RegistrationController : Controller
     {
         private readonly DbContext context;
         private readonly int saltSize = 16;
-        public UserController(DbContext context)
+        public RegistrationController(DbContext context)
         {
             this.context = context;
         }
