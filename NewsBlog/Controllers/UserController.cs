@@ -27,7 +27,7 @@ namespace NewsBlog.Controllers
             viewModel.Password = password;
             return viewModel;
         }
-        public IActionResult ValidRegistrationUser(string userName, string firstName, string lastName, string password)
+        public IActionResult SuccessfulRegistrationUser(string userName, string firstName, string lastName, string password)
         {          
             return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password));
         }
@@ -75,7 +75,7 @@ namespace NewsBlog.Controllers
                 });
                 this.context.SaveChanges();
                 //ViewData["userName"]= HttpContext.Session.GetString("userName");
-                return RedirectToAction("ValidRegistrationUser",
+                return RedirectToAction("SuccessfulRegistrationUser",
                     new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password});            
             }
 
@@ -84,7 +84,7 @@ namespace NewsBlog.Controllers
         {
             var users = context.Users;
             if (users == null) return false;
-            var res = users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).First();
+            var res = users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).FirstOrDefault();
             if (res == null) return false;
             return true;
         }
