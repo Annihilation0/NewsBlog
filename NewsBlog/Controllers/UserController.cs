@@ -71,6 +71,9 @@ namespace NewsBlog.Controllers
                     Role = context.Roles.Where(role => role.RoleName == "User").First(),
                 });
                 this.context.SaveChanges();
+                HttpContext.Session.SetString("userName", userName);
+                HttpContext.Session.SetString("firstName", firstName);
+                HttpContext.Session.SetString("lastName", lastName);
                 return RedirectToAction("ValidRegistrationUser",
                     new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password});            
             }
