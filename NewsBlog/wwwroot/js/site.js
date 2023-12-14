@@ -94,6 +94,23 @@ function RegistrationUser() {
             $('#searchNewsResult').html(data);
         }
     });
-
-
+}
+function LoginUser() {
+    let userName = document.getElementById("userName").value;
+    let password = document.getElementById("password").value;
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/Login/Login",
+        // Attach the value to a parameter called search
+        data: {
+            userName,
+            password
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
 }

@@ -1,12 +1,9 @@
-﻿@model NewsBlog.ViewModel.RegistrationDataUserViewModel
+﻿@model NewsBlog.ViewModel.LoginDataUserViewModel
 @{
-    ViewData["Title"] = "Пользователь";
+    ViewData["Title"] = "Вход";
     var userName = Model.UserName;
-    var firstName = Model.FirstName;
-    var lastName = Model.LastName;
     var password = Model.Password;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <body>
@@ -14,7 +11,7 @@
         <div class="registration-card-container">
             <div class="registration-card">
                 <div class="registration-content ">
-                    <p class="blog-author">Вы зарегистрированы</p>
+                    <p class="blog-author">Вы вошли</p>
                     <a href="/News/AllNews" class="read-more" style="width:170px;">Назад</a>
                 </div>
             </div>
@@ -22,3 +19,4 @@
     </div>
 </body>
 </html>
+

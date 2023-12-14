@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
 using NewsBlog.NewsBlogData;
 using NewsBlog.ViewModel;
-using System;
-using System.Diagnostics;
 
 namespace NewsBlog.Controllers
 {
@@ -16,10 +14,6 @@ namespace NewsBlog.Controllers
         {
             this.context = context;
         }
-        /*--------------------------------------
-        Отображение всех новостей из контекста
-        базы данных
-        --------------------------------------*/
         public IActionResult Index()
         {
             return View();
@@ -45,13 +39,22 @@ namespace NewsBlog.Controllers
         {
             return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password));
         }
+        public IActionResult InvalidRegistrationEmptyPassword(string userName, string firstName, string lastName, string password)
+        {
+            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password));
+        }
         public IActionResult RegistrationUser(string userName, string firstName, string lastName, string password)
         {
             if (userName is null) {
                 return RedirectToAction("InvalidRegistrationEmptyUsername",
                     new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password });
             }
-            var userExists = CheckIfUserExists(this.context, userName, firstName, lastName, password);
+            if (password is null)
+            {
+                return RedirectToAction("InvalidRegistrationEmptyPassword",
+                    new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password });
+            }
+            var userExists = CheckIfUserExists(this.context, userName);
             // пользователь с таким username уже существует
             if (userExists)
             {
@@ -71,22 +74,19 @@ namespace NewsBlog.Controllers
                     Role = context.Roles.Where(role => role.RoleName == "User").First(),
                 });
                 this.context.SaveChanges();
-                HttpContext.Session.SetString("userName", userName);
-                HttpContext.Session.SetString("firstName", firstName);
-                HttpContext.Session.SetString("lastName", lastName);
+                //ViewData["userName"]= HttpContext.Session.GetString("userName");
                 return RedirectToAction("ValidRegistrationUser",
                     new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password});            
             }
 
         }
-        private bool CheckIfUserExists(DbContext context, string userName, string firstName, string lastName, string password)
+        private bool CheckIfUserExists(DbContext context, string userName)
         {
-            bool userExists = userNameIsExist(context, userName);
-            return userExists;
-        }
-        private bool userNameIsExist(DbContext context, string userName) {
             var users = context.Users;
-            return users.Select(user => user.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase)).First();
+            if (users == null) return false;
+            var res = users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).First();
+            if (res == null) return false;
+            return true;
         }
         public IActionResult AllUser()
         {
