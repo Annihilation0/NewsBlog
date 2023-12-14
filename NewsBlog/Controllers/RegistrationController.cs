@@ -18,30 +18,31 @@ namespace NewsBlog.Controllers
         {
             return View();
         }
-        private RegistrationDataUserViewModel FillRegistrationDataUserViewModel(string userName, string firstName, string lastName, string password)
+        private RegistrationDataUserViewModel FillRegistrationDataUserViewModel(string userName, string firstName, string lastName, string password, string errorMessage)
         {
             RegistrationDataUserViewModel viewModel = new RegistrationDataUserViewModel();
             viewModel.UserName = userName;
             viewModel.FirstName = firstName;
             viewModel.LastName = lastName;
             viewModel.Password = password;
+            viewModel.ErrorMessage = errorMessage;
             return viewModel;
         }
         public IActionResult SuccessfulRegistrationUser(string userName, string firstName, string lastName, string password)
         {          
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password));
+            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password,""));
         }
         public IActionResult InvalidRegistrationUserAlreadyExists(string userName, string firstName, string lastName, string password)
         {
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password));
+            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password, "Пользователь с таким логином уже сущуствует"));
         }
         public IActionResult InvalidRegistrationEmptyUsername(string userName, string firstName, string lastName, string password)
         {
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password));
+            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password, "Введите логин"));
         }
         public IActionResult InvalidRegistrationEmptyPassword(string userName, string firstName, string lastName, string password)
         {
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password));
+            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password, "Введите пароль"));
         }
         public IActionResult RegistrationUser(string userName, string firstName, string lastName, string password)
         {
@@ -55,7 +56,7 @@ namespace NewsBlog.Controllers
                     new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password });
             }
             var userExists = CheckIfUserExists(this.context, userName);
-            // пользователь с таким username уже существует
+            // Пользователь уже существует
             if (userExists)
             {
                 return RedirectToAction("InvalidRegistrationUserAlreadyExists",
@@ -63,7 +64,7 @@ namespace NewsBlog.Controllers
             }
             else
             {
-                //запрос к бд для добавления нового пользователя + хэш пароля
+                // Добавление нового пользователя
                 this.context.Users.Add(new User
                 {
                     UserName = userName,
@@ -78,7 +79,6 @@ namespace NewsBlog.Controllers
                 return RedirectToAction("SuccessfulRegistrationUser",
                     new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password});            
             }
-
         }
         private bool CheckIfUserExists(DbContext context, string userName)
         {
