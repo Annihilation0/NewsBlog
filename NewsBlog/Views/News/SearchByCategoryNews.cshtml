@@ -4,31 +4,7 @@
 }
 <!DOCTYPE html>
 <html lang="en">
-
 <body>
-    <div class="blog-cards">
-        @foreach (var news in Model)
-        {
-            /*--------------------------------------
-            Отображение новости html
-            --------------------------------------*/
-            <div class="blog-card">
-                <img src=@news.ResourcePath alt="Please load image" />
-                <div class="blog-content">
-                    <h2 class="blog-title">@news.Title</h2>
-                    <p class="blog-author">@news.Author</p>
-                    <p class="blog-date">@news.Published</p>
-                    @foreach (var category in @news.Categories)
-                    {
-                        <a class="blog-category" OnClick="SearchByCategoryNews('@category')">@category</a>
-                    }
-                    <p class="blog-description">@news.Content</p>
-                    <a class="read-more" id="readNews" value=@news.NewsId OnClick="ReadNews(@news.NewsId)">Читать</a>
-                </div>
-            </div>
-        }
-    </div>
-
-    
+    @Html.Partial("_NewsPartical", Model)
 </body>
 </html>

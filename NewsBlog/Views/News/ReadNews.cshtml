@@ -7,13 +7,15 @@
     string userName = Context.Session.GetString("userName") ?? string.Empty;
     string firstName = Context.Session.GetString("firstName") ?? string.Empty;
     string lastName = Context.Session.GetString("lastName") ?? string.Empty;
-    /*--------------------------------------
-    Отображение новости с комментариями
-    --------------------------------------*/
+
+    string style = string.Empty;
+    if ((userName == null) || (userName == ""))
+    {
+        style = "visibility: hidden; display: none;";
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
-
 <body>
     <div class="blog-cards">
         <div class="blog-card">
@@ -45,7 +47,7 @@
             </div>
         </div>
     </div>
-    <div class="blog-comment-cards">
+    <div class="blog-comment-cards" style="@style">
         <div class="blog-comment-card">
             <div class="blog-comment-content">
                 <textarea rows="3" class="nav-link text-dark" style="width: 100%" id="commentText"></textarea>
@@ -53,7 +55,5 @@
             </div>
         </div>
     </div>
-
-
 </body>
 </html>
