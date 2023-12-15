@@ -1,0 +1,41 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NewsBlog.ViewModel;
+
+namespace NewsBlog.Controllers
+{
+    public class LogoutController : Controller
+    {
+        private readonly DbContext context;
+        public LogoutController(DbContext context)
+        {
+            this.context = context;
+        }
+        public IActionResult Index()
+        {
+            HttpContext.Session.SetString("userName", "");
+            var news = getAllNews(context);
+            return View("../News/AllNews", news);
+        }
+        private IQueryable<NewsViewModel> getAllNews(DbContext context)
+        {
+            var news = context.News
+                .Include(news => news.Categories)
+                .Include(news => news.Author)
+                .Select(news => new NewsViewModel
+                {
+                    NewsId = news.NewsId,
+                    Title = news.Title,
+                    Content = news.Content,
+                    Published = news.Published,
+                    Author = news.Author.FirstName + " " + news.Author.LastName,
+                    ResourcePath = news.ResourcePath,
+                    //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
+                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
+                    Comments = news.Comments,
+                });
+
+            return news;
+        }
+    }
+}

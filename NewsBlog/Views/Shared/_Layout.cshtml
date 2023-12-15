@@ -2,15 +2,15 @@
     var userName = Context.Session.GetString("userName");
     var styleLogin = "margin-right: 20px;";
     var styleLogout = styleLogin;
-    if (userName != null)
-    {
-        styleLogin += "visibility: hidden;display: none;";
-        styleLogout += "visibility: visible;";
-    }
-    else
+    if ((userName == null) || (userName == ""))
     {
         styleLogin += "visibility: visible;";
         styleLogout += "visibility: hidden;display: none;";
+    }
+    else
+    {
+        styleLogin += "visibility: hidden;display: none;";
+        styleLogout += "visibility: visible;";
     }
 }
 <!DOCTYPE html>
@@ -45,7 +45,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="navbar-text" style="@styleLogin" asp-area="" asp-controller="Login" asp-action="Index">Войти</a>
-                        </li>                                            
+                        </li>
                     </ul>
                 </div>
             </div>

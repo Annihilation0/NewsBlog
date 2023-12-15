@@ -126,10 +126,6 @@ namespace NewsBlog.Controllers
                .Where(news => news.Title.ToLower().Contains(search.ToLower()));
             return res;
         }
-        private bool ContainsCaseInsensitive(string source, string substring)
-        {
-            return source?.IndexOf(substring, StringComparison.OrdinalIgnoreCase) > -1;
-        }
         private IQueryable<NewsViewModel> SearchByCategoryNews(DbContext dbContext, string category)
         {
             category ??= "";
