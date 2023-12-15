@@ -39,6 +39,7 @@ namespace NewsBlog.Controllers
         //Успешный вход
         public IActionResult SuccessfulLoginUser(string userName, string password)
         {
+            HttpContext.Session.SetString("userName", userName);
             return PartialView(FillLoginDataUserViewModel(userName, password, ""));
         }
         private LoginDataUserViewModel FillLoginDataUserViewModel(string userName, string password, string error)
@@ -47,6 +48,13 @@ namespace NewsBlog.Controllers
             viewModel.UserName = userName;
             viewModel.Password = password;
             viewModel.ErrorMessage = error;
+
+            var user = GetUserByUsername(context,userName);
+            if (user != null)
+            {
+                viewModel.FirstName = (user.FirstName != null) ? user.FirstName : string.Empty;
+                viewModel.LastName = (user.LastName != null) ? user.LastName : string.Empty;
+            }
             return viewModel;
         }
 
@@ -82,13 +90,19 @@ namespace NewsBlog.Controllers
         {
             var users = context.Users;
             if(users == null) return false;
-            var res = users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).FirstOrDefault();
+            var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).First();
             if(res == null) return false;
             return true;
         }
+        private User? GetUserByUsername(DbContext context, string userName)
+        {
+            var users = context.Users;
+            var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).FirstOrDefault();
+            return res;
+        }
         private bool SuccessfulLogin(string userName, string password)
         {      
-            User user = context.Users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).First();
+            User user = context.Users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).First();
             if ((user.UserName == userName) && (user.PasswordHash == PasswordHashing.GetHashString(password))) return true;
             else return false;
         }

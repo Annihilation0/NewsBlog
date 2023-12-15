@@ -18,9 +18,9 @@ namespace NewsBlog.Controllers
         {
             return View();
         }
-        private RegistrationDataUserViewModel FillRegistrationDataUserViewModel(string userName, string firstName, string lastName, string password, string errorMessage)
+        private LoginDataUserViewModel FillLoginDataUserViewModel(string userName, string firstName, string lastName, string password, string errorMessage)
         {
-            RegistrationDataUserViewModel viewModel = new RegistrationDataUserViewModel();
+            LoginDataUserViewModel viewModel = new LoginDataUserViewModel();
             viewModel.UserName = userName;
             viewModel.FirstName = firstName;
             viewModel.LastName = lastName;
@@ -30,19 +30,19 @@ namespace NewsBlog.Controllers
         }
         public IActionResult SuccessfulRegistrationUser(string userName, string firstName, string lastName, string password)
         {          
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password,""));
+            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password,""));
         }
         public IActionResult InvalidRegistrationUserAlreadyExists(string userName, string firstName, string lastName, string password)
         {
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password, "Пользователь с таким логином уже сущуствует"));
+            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password, "Пользователь с таким логином уже сущуствует"));
         }
         public IActionResult InvalidRegistrationEmptyUsername(string userName, string firstName, string lastName, string password)
         {
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password, "Введите логин"));
+            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password, "Введите логин"));
         }
         public IActionResult InvalidRegistrationEmptyPassword(string userName, string firstName, string lastName, string password)
         {
-            return PartialView(FillRegistrationDataUserViewModel(userName, firstName, lastName, password, "Введите пароль"));
+            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password, "Введите пароль"));
         }
         public IActionResult RegistrationUser(string userName, string firstName, string lastName, string password)
         {
@@ -84,7 +84,7 @@ namespace NewsBlog.Controllers
         {
             var users = context.Users;
             if (users == null) return false;
-            var res = users.Select(user => user).Where(user => user.UserName.ToLower().Equals(userName.ToLower())).FirstOrDefault();
+            var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).FirstOrDefault();
             if (res == null) return false;
             return true;
         }

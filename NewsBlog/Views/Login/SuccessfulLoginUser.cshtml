@@ -1,6 +1,8 @@
 ﻿@model NewsBlog.ViewModel.LoginDataUserViewModel
+@using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Вход";
+    var user = Context.Session.GetString("userName");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +11,7 @@
         <div class="registration-card-container">
             <div class="registration-card">
                 <div class="registration-content ">
-                    <p class="blog-text">Вы вошли</p>
+                    <p class="blog-text">Вы вошли, @user</p>
                     <a href="/News/AllNews" class="read-more" style="width:100%;">Назад</a>
                 </div>
             </div>
@@ -17,4 +19,3 @@
     </div>
 </body>
 </html>
-

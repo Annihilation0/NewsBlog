@@ -1,4 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var userName = Context.Session.GetString("userName");
+    var styleLogin = "margin-right: 20px;";
+    var styleLogout = styleLogin;
+    if (userName != null)
+    {
+        styleLogin += "visibility: hidden;display: none;";
+        styleLogout += "visibility: visible;";
+    }
+    else
+    {
+        styleLogin += "visibility: visible;";
+        styleLogout += "visibility: hidden;display: none;";
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,10 +38,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1" style="display: flex;align-items: right;justify-content: right;">
                         <li class="nav-item">
-                        <a class="navbar-text" style="margin-right: 20px" asp-area="" asp-controller="Registration" asp-action="Index">Зарегистрироваться</a>
+                            <a class="navbar-text" style="@styleLogin" asp-area="" asp-controller="Registration" asp-action="Index">Зарегистрироваться</a>
                         </li>
                         <li class="nav-item">
-                        <a class="navbar-text" style="margin-right: 20px" asp-area="" asp-controller="Login" asp-action="Index">Войти</a>
+                            <a class="navbar-text" style="@styleLogout" asp-area="" asp-controller="Logout" asp-action="Index">Выйти</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-text" style="@styleLogin" asp-area="" asp-controller="Login" asp-action="Index">Войти</a>
                         </li>                                            
                     </ul>
                 </div>
