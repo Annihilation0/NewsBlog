@@ -13,7 +13,7 @@ namespace NewsBlog.Models
         [ForeignKey("News")]
         public int NewsId { get; set; }
         public string? Content { get; set; }
-        public virtual User Author { get; set; }
+        public virtual User Author { get; set; } 
         public virtual News News { get; set; }
 
     }

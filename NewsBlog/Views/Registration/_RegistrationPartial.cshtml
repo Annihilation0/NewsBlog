@@ -1,11 +1,11 @@
 ﻿@model NewsBlog.ViewModel.LoginDataUserViewModel
 @{
     ViewData["Title"] = "Пользователь";
-    var userName = Model.UserName;
-    var firstName = Model.FirstName;
-    var lastName = Model.LastName;
-    var password = Model.Password;
-    var errorMessage = Model.ErrorMessage;
+    var userName = Model.UserName ?? string.Empty;
+    var firstName = Model.FirstName ?? string.Empty;
+    var lastName = Model.LastName ?? string.Empty;
+    var password = Model.Password ?? string.Empty;
+    var errorMessage = Model.ErrorMessage ?? string.Empty;
 }
 
 <!DOCTYPE html>
@@ -19,18 +19,16 @@
     }
     <div class="blog-cards">
         <div class="registration-card-container">
-            <div class="registration-card">
+            <div class="registration-card" style="height: 350px">
                 <div class="registration-content ">
                     <p class="blog-text">Введите логин</p>
-                    <input id="userName" class="blog-text" placeholder="Логин" value=@userName /><br />
+                    <input id="userName" class="blog-text" placeholder="Логин" value=@userName><br />
                     <p class="blog-text">Введите имя</p>
-                    <input id="firstName" class="blog-text" placeholder="Имя" value=@firstName /><br />
+                    <input id="firstName" class="blog-text" placeholder="Имя" value=@firstName><br />
                     <p class="blog-text">Введите фамилию</p>
-                    <input id="lastName" class="blog-text" placeholder="Фамилия" value=@lastName /><br />
+                    <input id="lastName" class="blog-text" placeholder="Фамилия" value=@lastName><br />
                     <p class="blog-text">Введите пароль</p>
-                    <input id="password" class="blog-text" type="password" placeholder="Пароль" value=@password /><br />
-                    <p class="blog-text">Повторите пароль</p>
-                    <input id="password" class="blog-text" type="password" placeholder="Пароль" /><br /><br />
+                    <input id="password" class="blog-text" type="password" placeholder="Пароль" value=@password><br />
                     <a class="read-more" id="RegistrationUser" OnClick="RegistrationUser()" style="width:100%;">Зарегистрироваться</a>
                 </div>
             </div>

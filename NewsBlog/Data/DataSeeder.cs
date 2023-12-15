@@ -125,7 +125,7 @@ namespace NewsBlog.NewsBlogData
         }
         private static void AddComments(DbContext context)
         {
-            var comments = context.Comments.FirstOrDefault();
+           /* var comments = context.Comments.FirstOrDefault();
             int saltSize = 16;
             if (comments != null)
             { return; }
@@ -160,8 +160,9 @@ namespace NewsBlog.NewsBlogData
                 News = context.News.Where(news => news.NewsId == 2).First(),
                 Content = "Хочется еще статей на эту тему"
             });
-
+           
             context.SaveChanges();
+           */
         }
     }
 }

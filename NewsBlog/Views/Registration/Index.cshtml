@@ -1,31 +1,11 @@
-﻿
+﻿@model NewsBlog.ViewModel.LoginDataUserViewModel
 @{
-    ViewData["Title"] = "Пользователь";
+    ViewData["Title"] = "Вход";
+    var model = new NewsBlog.ViewModel.LoginDataUserViewModel();
+    model.UserName = string.Empty;
+    model.FirstName = string.Empty;
+    model.LastName = string.Empty;
+    model.Password = string.Empty;
+    model.ErrorMessage = string.Empty;
 }
-
-<!DOCTYPE html>
-<html lang="en">
-
-<body>
-    <div class="blog-cards">
-        <div class="registration-card-container">
-            <div class="registration-card">
-                <div class="registration-content ">
-                    <p class="blog-text">Введите логин</p>
-                    <input id="userName" class="blog-text" placeholder="Логин" /><br />
-                    <p class="blog-text">Введите имя</p>
-                    <input id="firstName" class="blog-text" placeholder="Имя" /><br />
-                    <p class="blog-text">Введите фамилию</p>
-                    <input id="lastName" class="blog-text" placeholder="Фамилия" /><br />
-                    <p class="blog-text">Введите пароль</p>
-                    <input id="password" class="blog-text" type="password" placeholder="Пароль" /><br />
-                    <p class="blog-text">Повторите пароль</p>
-                    <input id="password" class="blog-text" type="password" placeholder="Пароль" /><br /><br />
-                    <a class="read-more" id="RegistrationUser" OnClick="RegistrationUser()">Зарегистрироваться</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-
+@Html.Partial("_RegistrationPartial", model)

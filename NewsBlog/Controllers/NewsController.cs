@@ -19,7 +19,6 @@ namespace NewsBlog.Controllers
         --------------------------------------*/
         public IActionResult Index()
         {
-            
             return View();
         }
         public IActionResult AllNews()
@@ -66,35 +65,18 @@ namespace NewsBlog.Controllers
                    Comments = news.Comments,
                })
                .Where(news => news.NewsId.Equals(newsId)).First();
-            var comments = context.Comments
-                 .Include(comment => comment.Author)
-                 .Include(comment => comment.News)
-                 .Select(comment => new CommentViewModel
-            {
-                CommentId = comment.CommentId,
-                Published = comment.Published,
-                Content = comment.Content,
-                Author = comment.Author.ToString() ?? string.Empty,
-                News = comment.News,
-            });
-            if ((user == null)||(news == null)) return PartialView("ReadNews", new { news, comments}); 
-            AddComment(user, news, commentText);
-            comments = context.Comments.Select(comment => new CommentViewModel
-            {
-                CommentId = comment.CommentId,
-                Published = comment.Published,
-                Content = comment.Content,
-                Author = comment.Author.ToString() ?? string.Empty,
-                News = comment.News,
-            });
+            var comments = SearchCommentOfNews(context, newsId);
 
-            return RedirectToAction("ReadNews", new { news.NewsId });
+            if ((user == null)||(news == null)) return PartialView("ReadNews", new { news, comments}); 
+
+            AddComment(user, news, commentText);
+
+            comments = SearchCommentOfNews(context, newsId);
+
+            return RedirectToAction("ReadNews", new { newsId });
         }
         public IActionResult ReadNews(int newsId)
         {
-           //var searchingNews = SearchNewsById(this.Context, newsId);
-           // return PartialView(searchingNews);
-
             var searchingNews = new NewsAndCommentViewModel();
 
             searchingNews.News = SearchNewsById(this.context, newsId).First();
@@ -116,7 +98,6 @@ namespace NewsBlog.Controllers
                    News = comment.News
                })
                .Where(comment => comment.News.NewsId.Equals(newsId));
-
             return res;
         }
         /*--------------------------------------
@@ -212,13 +193,18 @@ namespace NewsBlog.Controllers
 
             return news;
         }
+        /*--------------------------------------
+        Получение пользователя по userName
+        --------------------------------------*/
         private User? GetUserByUsername(DbContext context, string userName)
         {
             var users = context.Users;
             var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).FirstOrDefault();
             return res;
         }
-
+        /*--------------------------------------
+        Добавление нового комментария
+        --------------------------------------*/
         private void AddComment(User author, News news, string commentText)
         {
             var comments = context.Comments;
