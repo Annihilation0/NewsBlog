@@ -114,3 +114,21 @@ function LoginUser() {
         }
     });
 }
+function AddComment(newsId) {
+    let commentText = document.getElementById("commentText").value;
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/News/AddComment",
+        // Attach the value to a parameter called search
+        data: {
+            commentText,
+            newsId
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
+}

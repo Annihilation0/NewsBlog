@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
 using NewsBlog.NewsBlogData;
 using NewsBlog.ViewModel;
@@ -39,25 +40,16 @@ namespace NewsBlog.Controllers
         //Успешный вход
         public IActionResult SuccessfulLoginUser(string userName, string password)
         {
+            var user = GetUserByUsername(context, userName);
+            string firstName = user.FirstName ?? string.Empty;
+            string lastName = user.LastName ?? string.Empty;
+
             HttpContext.Session.SetString("userName", userName);
+            HttpContext.Session.SetString("firstName", firstName);
+            HttpContext.Session.SetString("lastName", lastName);
+
             return PartialView(FillLoginDataUserViewModel(userName, password, ""));
         }
-        private LoginDataUserViewModel FillLoginDataUserViewModel(string userName, string password, string error)
-        {
-            LoginDataUserViewModel viewModel = new LoginDataUserViewModel();
-            viewModel.UserName = userName;
-            viewModel.Password = password;
-            viewModel.ErrorMessage = error;
-
-            var user = GetUserByUsername(context,userName);
-            if (user != null)
-            {
-                viewModel.FirstName = (user.FirstName != null) ? user.FirstName : string.Empty;
-                viewModel.LastName = (user.LastName != null) ? user.LastName : string.Empty;
-            }
-            return viewModel;
-        }
-
         public IActionResult Login(string userName, string password)
         {
             if (userName is null)
@@ -77,14 +69,29 @@ namespace NewsBlog.Controllers
                 return RedirectToAction("InvalidLoginUserDoesntExists",
                     new { UserName = userName, Password = password });
             }
-            bool successfulLogin = SuccessfulLogin(userName, password);
-            if (!successfulLogin)
+            bool isLoginSuccessful = IsLoginSuccessful(userName, password);
+            if (!isLoginSuccessful)
             {
                 return RedirectToAction("InvalidLoginUserInvalidPassword",
                     new { UserName = userName, Password = password });
             }
             return RedirectToAction("SuccessfulLoginUser",
                     new { UserName = userName, Password = password });
+        }
+        private LoginDataUserViewModel FillLoginDataUserViewModel(string userName, string password, string error)
+        {
+            LoginDataUserViewModel viewModel = new LoginDataUserViewModel();
+            viewModel.UserName = userName;
+            viewModel.Password = password;
+            viewModel.ErrorMessage = error;
+
+            var user = GetUserByUsername(context, userName);
+            if (user != null)
+            {
+                viewModel.FirstName = (user.FirstName != null) ? user.FirstName : string.Empty;
+                viewModel.LastName = (user.LastName != null) ? user.LastName : string.Empty;
+            }
+            return viewModel;
         }
         private bool CheckIfUserExists(DbContext context, string userName)
         {
@@ -100,7 +107,7 @@ namespace NewsBlog.Controllers
             var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).FirstOrDefault();
             return res;
         }
-        private bool SuccessfulLogin(string userName, string password)
+        private bool IsLoginSuccessful(string userName, string password)
         {      
             User user = context.Users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).First();
             if ((user.UserName == userName) && (user.PasswordHash == PasswordHashing.GetHashString(password))) return true;

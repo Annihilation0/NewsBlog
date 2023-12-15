@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
+using NewsBlog.NewsBlogData;
 using NewsBlog.ViewModel;
-using System.Data.SqlTypes;
-using System.Diagnostics;
 
 namespace NewsBlog.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly DbContext dbContext;
-        public NewsController(DbContext dbContext)
+        private readonly DbContext context;
+        public NewsController(DbContext context)
         {
-            this.dbContext = dbContext;
+            this.context = context;
         }
         /*--------------------------------------
         Отображение всех новостей из контекста
@@ -25,7 +24,7 @@ namespace NewsBlog.Controllers
         }
         public IActionResult AllNews()
         {
-            var news = getAllNews(this.dbContext);
+            var news = getAllNews(this.context);
             return View(news);
         }
         /*--------------------------------------
@@ -34,13 +33,13 @@ namespace NewsBlog.Controllers
         --------------------------------------*/
         public IActionResult SearchNews(string search)
         {
-            var searchingNews = SearchNewsByTitle(this.dbContext, search);
+            var searchingNews = SearchNewsByTitle(this.context, search);
             return PartialView(searchingNews);
 
         }
         public IActionResult SearchByCategoryNews(string category)
         {
-            var searchingNews = SearchByCategoryNews(this.dbContext, category);
+            var searchingNews = SearchByCategoryNews(this.context, category);
             return PartialView(searchingNews);
 
         }
@@ -48,6 +47,49 @@ namespace NewsBlog.Controllers
         PartialView для отображения новости с
         заданным newsId
         --------------------------------------*/
+        public IActionResult AddComment(string commentText, int newsId)
+        {
+            string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
+            var user = GetUserByUsername(this.context, userName);
+            var news = context.News
+               .Include(news => news.Categories)
+               .Include(news => news.Author)
+               .Select(news => new News
+               {
+                   NewsId = news.NewsId,
+                   Title = news.Title,
+                   Content = news.Content,
+                   Published = news.Published,
+                   Author = news.Author,
+                   ResourcePath = news.ResourcePath,
+                   Categories = news.Categories,
+                   Comments = news.Comments,
+               })
+               .Where(news => news.NewsId.Equals(newsId)).First();
+            var comments = context.Comments
+                 .Include(comment => comment.Author)
+                 .Include(comment => comment.News)
+                 .Select(comment => new CommentViewModel
+            {
+                CommentId = comment.CommentId,
+                Published = comment.Published,
+                Content = comment.Content,
+                Author = comment.Author.ToString() ?? string.Empty,
+                News = comment.News,
+            });
+            if ((user == null)||(news == null)) return PartialView("ReadNews", new { news, comments}); 
+            AddComment(user, news, commentText);
+            comments = context.Comments.Select(comment => new CommentViewModel
+            {
+                CommentId = comment.CommentId,
+                Published = comment.Published,
+                Content = comment.Content,
+                Author = comment.Author.ToString() ?? string.Empty,
+                News = comment.News,
+            });
+
+            return RedirectToAction("ReadNews", new { news.NewsId });
+        }
         public IActionResult ReadNews(int newsId)
         {
            //var searchingNews = SearchNewsById(this.Context, newsId);
@@ -55,14 +97,14 @@ namespace NewsBlog.Controllers
 
             var searchingNews = new NewsAndCommentViewModel();
 
-            searchingNews.News = SearchNewsById(this.dbContext, newsId).First();
-            searchingNews.Comments = SearchCommentOfNews(this.dbContext, searchingNews.News.NewsId);
+            searchingNews.News = SearchNewsById(this.context, newsId).First();
+            searchingNews.Comments = SearchCommentOfNews(this.context, searchingNews.News.NewsId);
 
             return PartialView(searchingNews);
         }
-        private IQueryable<CommentViewModel> SearchCommentOfNews(DbContext dbContext, int newsId)
+        private IQueryable<CommentViewModel> SearchCommentOfNews(DbContext context, int newsId)
         {
-            var res = dbContext.Comments
+            var res = context.Comments
                .Include(comment => comment.Author)
                .Include(comment => comment.News)
                .Select(comment => new CommentViewModel
@@ -81,9 +123,9 @@ namespace NewsBlog.Controllers
         Получение новости из контекста базы данных
         по идентификатору newsId
         --------------------------------------*/
-        private IQueryable<NewsViewModel> SearchNewsById(DbContext dbContext, int newsId)
+        private IQueryable<NewsViewModel> SearchNewsById(DbContext context, int newsId)
         {
-            var res = dbContext.News
+            var res = context.News
                .Include(news => news.Categories)
                .Include(news => news.Author)
                .Select(news => new NewsViewModel
@@ -94,7 +136,6 @@ namespace NewsBlog.Controllers
                    Published = news.Published,
                    Author = news.Author.FirstName + " " + news.Author.LastName,
                    ResourcePath = news.ResourcePath,
-                   //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
                    Comments = news.Comments,
                })
@@ -105,10 +146,10 @@ namespace NewsBlog.Controllers
         Получение всех новостей из контекста базы данных,
         заголовок которых содержит в себе строку search
         --------------------------------------*/
-        private IQueryable<NewsViewModel> SearchNewsByTitle(DbContext dbContext, string search)
+        private IQueryable<NewsViewModel> SearchNewsByTitle(DbContext context, string search)
         {
             search ??= "";
-            var res = dbContext.News
+            var res = context.News
                .Include(news => news.Categories)
                .Include(news => news.Author)
                .Select(news => new NewsViewModel
@@ -126,10 +167,10 @@ namespace NewsBlog.Controllers
                .Where(news => news.Title.ToLower().Contains(search.ToLower()));
             return res;
         }
-        private IQueryable<NewsViewModel> SearchByCategoryNews(DbContext dbContext, string category)
+        private IQueryable<NewsViewModel> SearchByCategoryNews(DbContext context, string category)
         {
             category ??= "";
-            var res = dbContext.News
+            var res = context.News
                .Include(news => news.Categories)
                .Include(news => news.Author)
                .Select(news => new NewsViewModel
@@ -171,8 +212,26 @@ namespace NewsBlog.Controllers
 
             return news;
         }
+        private User? GetUserByUsername(DbContext context, string userName)
+        {
+            var users = context.Users;
+            var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).FirstOrDefault();
+            return res;
+        }
 
+        private void AddComment(User author, News news, string commentText)
+        {
+            var comments = context.Comments;
 
-  
+            context.Comments.Add(new Comment
+            {
+                Published = DateTime.UtcNow,
+                Author = author,
+                News = context.News.Select(n => n).Where(n => n.NewsId.Equals(news.NewsId)).First(),
+                Content = commentText
+            });
+
+            context.SaveChanges();
+        }
     }
 }

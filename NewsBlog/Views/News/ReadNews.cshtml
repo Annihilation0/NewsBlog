@@ -3,11 +3,14 @@
     ViewData["Title"] = "Новости";
     var news = Model.News;
     var comments = Model.Comments;
+
+    string userName = Context.Session.GetString("userName") ?? string.Empty;
+    string firstName = Context.Session.GetString("firstName") ?? string.Empty;
+    string lastName = Context.Session.GetString("lastName") ?? string.Empty;
     /*--------------------------------------
-    Отображение одной новости с комментариями
+    Отображение новости с комментариями
     --------------------------------------*/
 }
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,24 +29,32 @@
                 <p class="blog-read-description">@news.Content</p>
             </div>
         </div>
-
     </div>
     <div class="blog-comment-cards">
-    <h2 class="blog-title">Комментарии</h2>
+        <h2 class="blog-title">Комментарии</h2>
     </div>
     <div class="blog-comment-cards">
-   
         <div class="blog-comment-card">
-            <div class="blog-content">
+            <div class="blog-comment-content">
                 @foreach (var comment in comments)
                 {
                     <p class="blog-comment-author">@comment.Author.ToString()</p>
                     <p class="blog-date">@comment.Published.ToString()</p>
-                    <p class="blog-comment-description">@comment.Content.ToString()</p>
+                    <p class="blog-comment-description">@((comment.Content ?? string.Empty).ToString())</p>
                 }
             </div>
         </div>
     </div>
+
+    <div class="blog-comment-cards">
+        <div class="blog-comment-card">
+            <div class="blog-comment-content">
+                <textarea rows="3" class="nav-link text-dark" style="width: 100%" id="commentText"></textarea>
+                <a rows="3" class="read-more" style="width: 100%" id="addComment" OnClick="AddComment(@news.NewsId)">Добавить комментарий</a>
+            </div>
+        </div>
+    </div>
+
 
 </body>
 </html>

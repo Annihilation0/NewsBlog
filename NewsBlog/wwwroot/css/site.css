@@ -45,6 +45,10 @@ body {
     overflow: hidden;
     flex: auto;
 }
+.blog-comment-content {
+    padding: 16px;
+    height: 100%;
+}
 .blog-cards {
     display: flex;
     align-items: center;
