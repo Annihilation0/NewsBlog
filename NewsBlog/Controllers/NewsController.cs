@@ -26,6 +26,17 @@ namespace NewsBlog.Controllers
             var news = getAllNews(this.context);
             return View(news);
         }
+        public IActionResult MyNews()
+        {
+            string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
+            var news = getUserNews(this.context, userName);
+            return View(news);
+        }
+        public IActionResult AddNews()
+        {
+            // подучить Title, Content, Published, Author, ResourcePath    
+            return View();
+        }
         /*--------------------------------------
         PartialView для отображения результата
         поиска 
@@ -34,13 +45,11 @@ namespace NewsBlog.Controllers
         {
             var searchingNews = SearchNewsByTitle(this.context, search);
             return PartialView(searchingNews);
-
         }
         public IActionResult SearchByCategoryNews(string category)
         {
             var searchingNews = SearchByCategoryNews(this.context, category);
             return PartialView(searchingNews);
-
         }
         /*--------------------------------------
         PartialView для отображения новости с
@@ -170,8 +179,7 @@ namespace NewsBlog.Controllers
             return res;
         }
         /*--------------------------------------
-        Получение всех новостей из контекста
-        базы данных
+        Получение всех новостей 
         --------------------------------------*/
         private IQueryable<NewsViewModel> getAllNews(DbContext context)
         {
@@ -190,6 +198,40 @@ namespace NewsBlog.Controllers
                     Categories = news.Categories.Select(category => category.CategoryName).ToList(),
                     Comments = news.Comments,
                 });
+
+            return news;
+        }
+        /*--------------------------------------
+        Получение новостей пользователя
+        --------------------------------------*/
+        private IQueryable<NewsViewModel> getUserNews(DbContext context, string userName)
+        {
+            var news = context.News
+                .Include(news => news.Categories)
+                .Include(news => news.Author)
+                .Select(news => new News
+                {
+                    NewsId = news.NewsId,
+                    Title = news.Title,
+                    Content = news.Content,
+                    Published = news.Published,
+                    Author = news.Author,
+                    ResourcePath = news.ResourcePath,
+                    Categories = news.Categories,
+                    Comments = news.Comments,
+                })
+                .Where(news => (news.Author.UserName ?? string.Empty).ToLower().Equals(userName.ToLower()))
+                .Select(news => new NewsViewModel
+                 {
+                     NewsId = news.NewsId,
+                     Title = news.Title,
+                     Content = news.Content,
+                     Published = news.Published,
+                     Author = news.Author.FirstName + " " + news.Author.LastName,
+                     ResourcePath = news.ResourcePath,
+                     Categories = news.Categories.Select(category => category.CategoryName).ToList(),
+                     Comments = news.Comments,
+                 });
 
             return news;
         }

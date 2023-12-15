@@ -30,7 +30,6 @@ namespace NewsBlog.Controllers
                     Published = news.Published,
                     Author = news.Author.FirstName + " " + news.Author.LastName,
                     ResourcePath = news.ResourcePath,
-                    //Categories = string.Join(" ", news.Categories.Select(category => category.CategoryName)),
                     Categories = news.Categories.Select(category => category.CategoryName).ToList(),
                     Comments = news.Comments,
                 });
