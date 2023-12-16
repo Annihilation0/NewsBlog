@@ -153,3 +153,7 @@ function AddNews() {
         }
     });
 }
+function changeClass() {
+    $(fileDiv).removeClass("file-dummy").addClass("file-dummy-success");
+    document.getElementById("fileText").innerHTML = "Файл добавлен";
+}

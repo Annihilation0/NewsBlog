@@ -2,6 +2,8 @@
 @model NewsBlog.Views.News.AddNewsModel
 @{
     string style = "width: 100%; margin-top: 20px;";
+    string classFile = "file-dummy";
+    string textFile = "Выберите файл";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -12,10 +14,9 @@
                 <textarea rows="1" class="nav-link text-dark" style="@style" id="newsTitle" placeholder="Заголовок" multiple="multiple"></textarea>
                 <textarea rows="15" class="nav-link text-dark" style="@style" id="newsText" placeholder="Текст новости" multiple="multiple"></textarea>
                 <div class="form-group file-area" style="@style">
-                    <input style="width: 1050px; height: 112px" type="file" name="newsImage" id="newsImage" required="required" multiple="multiple" accept="image/*" />
-                    <div class="file-dummy">
-                        <div class="success">Файл выбран</div>
-                        <div class="default">Выберите файл</div>
+                    <input onchange="changeClass()" style="width: 1050px; height: 112px;" type="file" name="newsImage" id="newsImage" required="required" multiple="multiple" accept="image/*" />
+                    <div id="fileDiv" class="@classFile">
+                        <div id="fileText">@textFile</div>
                     </div>
                 </div>
                 <div class="form-group">
