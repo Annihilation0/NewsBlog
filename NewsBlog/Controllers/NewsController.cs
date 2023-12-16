@@ -23,8 +23,12 @@ namespace NewsBlog.Controllers
         }
         public IActionResult AllNews()
         {
-            var news = getAllNews(this.context);
+            var news = getAllNews();
             return View(news);
+        }
+        public IActionResult BuilderNews()
+        {
+            return View();
         }
         public IActionResult MyNews()
         {
@@ -32,10 +36,15 @@ namespace NewsBlog.Controllers
             var news = getUserNews(this.context, userName);
             return View(news);
         }
-        public IActionResult AddNews()
+        public IActionResult AddNews(string newsTitle, string newsText, string path)
         {
-            // подучить Title, Content, Published, Author, ResourcePath    
-            return View();
+            string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
+            var author = GetUserByUsername(context, userName);
+            AddNews(newsTitle, newsText, author, path);
+
+            var news = getAllNews();
+
+            return RedirectToAction("MyNews", news);
         }
         /*--------------------------------------
         PartialView для отображения результата
@@ -181,7 +190,7 @@ namespace NewsBlog.Controllers
         /*--------------------------------------
         Получение всех новостей 
         --------------------------------------*/
-        private IQueryable<NewsViewModel> getAllNews(DbContext context)
+        private IQueryable<NewsViewModel> getAllNews()
         {
             var news = context.News
                 .Include(news => news.Categories)
@@ -257,6 +266,21 @@ namespace NewsBlog.Controllers
                 Author = author,
                 News = context.News.Select(n => n).Where(n => n.NewsId.Equals(news.NewsId)).First(),
                 Content = commentText
+            });
+
+            context.SaveChanges();
+        }
+        private void AddNews(string title, string content, User author, string path)
+        {
+            var news = context.News;
+
+            context.News.Add(new News
+            {
+                Title = title,
+                Content = content,
+                Published = DateTime.UtcNow,
+                Author = author,
+                ResourcePath = path
             });
 
             context.SaveChanges();

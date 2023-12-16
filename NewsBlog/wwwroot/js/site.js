@@ -132,3 +132,24 @@ function AddComment(newsId) {
         }
     });
 }
+function AddNews() {
+    let newsTitle = document.getElementById("newsTitle").value;
+    let newsText = document.getElementById("newsText").value;
+    let path = document.getElementById("newsImage").value.replace("C:\\fakepath\\", "/css/Resources/");
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/News/AddNews",
+        // Attach the value to a parameter called search
+        data: {
+            newsTitle,
+            newsText,
+            path
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
+}
