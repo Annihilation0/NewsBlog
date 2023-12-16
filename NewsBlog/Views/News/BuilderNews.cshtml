@@ -1,17 +1,30 @@
-﻿@page
-@model NewsBlog.Views.News.AddNewsModel
+﻿@model IEnumerable<NewsBlog.ViewModel.CategoryViewModel>
 @{
-    string style = "width: 100%; margin-top: 20px;";
+    string style = "width: 100%; margin-top:20px; ";
     string classFile = "file-dummy";
     string textFile = "Выберите файл";
+    string errorMessage = Model.First().ErrorMessage;
+    
 }
 <!DOCTYPE html>
 <html lang="en">
 <body>
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="error-message">
+            @errorMessage
+        </div>
+    }
     <div class="blog-comment-cards">
         <div class="blog-comment-card">
             <div class="blog-comment-content">
-                <textarea rows="1" class="nav-link text-dark" style="@style" id="newsTitle" placeholder="Заголовок" multiple="multiple"></textarea>
+                <textarea rows="1" class="nav-link text-dark" style="@style margin-bottom: 20px;" id="newsTitle" placeholder="Заголовок" multiple="multiple"></textarea>
+
+                @foreach (var category in Model)
+                {
+                    <a id="category_@category.CategoryId" class="blog-category" OnClick="AddNewsCategory('@category.CategoryId')">@category.CategoryName</a>
+                }
+                <p id="selectedCategories" value="" style="display: none; visibility:hidden"></p>
                 <textarea rows="15" class="nav-link text-dark" style="@style" id="newsText" placeholder="Текст новости" multiple="multiple"></textarea>
                 <div class="form-group file-area" style="@style">
                     <input onchange="changeClass()" style="width: 1050px; height: 112px;" type="file" name="newsImage" id="newsImage" required="required" multiple="multiple" accept="image/*" />

@@ -60,7 +60,7 @@ function SearchByCategoryNews(category) {
         data: { category: value },
         datatype: "html",
         success: function (data) {
-            
+
             for (i = 0; i < categories.length; i++) {
                 if (categories.item(i).innerHTML == category)
                     categories.item(i).classList.add('blog-category-selected')
@@ -69,8 +69,8 @@ function SearchByCategoryNews(category) {
             $('#searchNewsResult').html(data);
         }
     });
-    
-    
+
+
 }
 function RegistrationUser() {
     let userName = document.getElementById("userName").value;
@@ -134,6 +134,7 @@ function AddComment(newsId) {
 }
 function AddNews() {
     let newsTitle = document.getElementById("newsTitle").value;
+    let newsCategories = document.getElementById("selectedCategories").value;
     let newsText = document.getElementById("newsText").value;
     let path = document.getElementById("newsImage").value.replace("C:\\fakepath\\", "/css/Resources/");
     $.ajax({
@@ -143,8 +144,26 @@ function AddNews() {
         // Attach the value to a parameter called search
         data: {
             newsTitle,
+            newsCategories,
             newsText,
             path
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
+}
+function DeleteNews(newsId) {
+
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/News/DeleteNews",
+        // Attach the value to a parameter called search
+        data: {
+            newsId
         },
         datatype: "html",
         success: function (data) {
@@ -157,3 +176,27 @@ function changeClass() {
     $(fileDiv).removeClass("file-dummy").addClass("file-dummy-success");
     document.getElementById("fileText").innerHTML = "Файл добавлен";
 }
+function AddNewsCategory(categoryId) {
+    var categories = document.getElementById("selectedCategories");
+    var category = document.getElementById("category_" + categoryId);
+    var value = "" + categories.value;
+    category.classList.toggle("blog-category-selected");
+
+    if (value.includes(categoryId))
+    {
+        categories.value = value.replace(categoryId+",", "");
+        categories.value = categories.value.replace(categoryId, "");
+        return;
+    }
+    if ((value == "undefined") || (value == ""))
+        categories.value = categoryId;
+    else
+        categories.value += "," + categoryId;
+}
+
+/*
+function ToogleClassCategory(categoryName) {
+    var category = document.getElementById("category_" + categoryName);
+    category.classList.toggle("blog-category-selected");
+}
+*/

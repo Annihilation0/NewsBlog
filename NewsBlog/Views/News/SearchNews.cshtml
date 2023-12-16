@@ -5,6 +5,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-    @Html.Partial("../News/_NewsPartical", Model)
+    @{
+        if (Model.Count() == 0)
+        {
+            <h1 style="font-size: 80px;font-weight: 200;color: #c3c3c3;    text-align: center;">
+                Новостей нет
+            </h1>
+        }
+        else
+        {
+            @Html.Partial("../News/_NewsPartical", Model)
+        }
+    }
 </body>
 </html>

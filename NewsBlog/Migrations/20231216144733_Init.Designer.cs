@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NewsBlog.Migrations
 {
     [DbContext(typeof(DbContext))]
-    [Migration("20231215151529_Init")]
+    [Migration("20231216144733_Init")]
     partial class Init
     {
         /// <inheritdoc />

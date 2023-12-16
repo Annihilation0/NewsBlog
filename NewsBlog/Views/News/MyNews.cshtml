@@ -5,7 +5,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-    @Html.Partial("../News/_NewsPartical", Model)
+    <div class="blog-cards">
+        @{
+            if (Model.Count() == 0)
+            {
+                <h1 style="font-size: 80px;font-weight: 200;color: #c3c3c3;">
+                    Новостей нет
+                </h1>
+            }
+            else
+            {
+                @foreach (var news in Model)
+                {
+                    <div class="blog-card">
+                        <img src=@news.ResourcePath alt="Please load image" />
+                        <div class="blog-content">
+                            <h2 class="blog-title">@news.Title</h2>
+                            <p class="blog-author">@news.Author</p>
+                            <p class="blog-date">@news.Published</p>
+                            @foreach (var category in @news.Categories)
+                            {
+                                <a class="blog-category" OnClick="SearchByCategoryNews('@category');">@category</a>
+                            }
+                            <p class="blog-description">@news.Content</p>
+                            <a class="read-more" id="readNews" value=@news.NewsId OnClick="ReadNews(@news.NewsId)">Читать</a>
+                            <a class="delete" id="deleteNews" value=@news.NewsId OnClick="DeleteNews(@news.NewsId)">Удалить</a>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
     <a class="add" id="readNews" href="../News/BuilderNews">+</a>
 </body>
 </html>

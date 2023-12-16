@@ -133,11 +133,12 @@ img {
     .blog-category:hover {
         background-color: #3f788f;
         color: #fff;
-
         cursor: pointer;
     }
 .blog-category-selected {
-    border: 2px solid #6ed4d9;
+    background-color: #3f788f;
+    color: #fff;
+    cursor: pointer;
 }
 
 .blog-description {
@@ -186,6 +187,26 @@ img {
         color: #fff;
         cursor: pointer;
     }
+.delete {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #ff303a;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 16px;
+    transition: 0.3s ease;
+    text-align: center;
+    cursor: default;
+    float: right;
+}
+
+    .delete:hover {
+        background-color: #c51f27;
+        color: #fff;
+        cursor: pointer;
+    }
+
 .add {
     display: block;
     position: absolute;

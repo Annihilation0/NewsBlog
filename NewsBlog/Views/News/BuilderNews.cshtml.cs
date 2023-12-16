@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace NewsBlog.Views.News
 {
-    public class AddNewsModel : PageModel
+    public class BuildNewsModel : PageModel
     {
         public void OnGet()
         {

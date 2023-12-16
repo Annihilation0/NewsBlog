@@ -1,6 +1,7 @@
 ﻿@{
     var userName = Context.Session.GetString("userName");
-    var styleLogin = "margin-right: 20px;";
+    var user = Context.Session.GetString("firstName") + " " + Context.Session.GetString("lastName");
+    var styleLogin = "margin-right: 20px;"; 
     var styleLogout = styleLogin;
     if ((userName == null) || (userName == ""))
     {
@@ -28,6 +29,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="News" asp-action="AllNews">Главная</a>
+               
                 <input class="nav-link text-dark" id="searchNews" name="searchNews" placeholder="Найти" autocomplete="off" style="width: 550px; margin-left: 550px;" />
                 <img src="~/css/Resources/search.png" alt="Please load image" style="width: 30px;height: 30px; margin-top:5px;margin-bottom:5px;margin-right:5px;margin-left: 15px;" />
 
@@ -36,9 +38,12 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1" style="display: flex;align-items: right;justify-content: right;">
+                    <ul class="navbar-nav flex-grow-1" style="display:flex; align-items:right; justify-content:right;">
                         <li class="nav-item">
                             <a class="navbar-text" style="@styleLogin" asp-area="" asp-controller="Registration" asp-action="Index">Зарегистрироваться</a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="@styleLogout text-decoration:none; cursor:default; margin-right:140px;">@user</a>
                         </li>
                         <li class="nav-item">
                             <a class="navbar-text" style="@styleLogout" asp-area="" asp-controller="News" asp-action="MyNews">Мои новости</a>
