@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace NewsBlog.Views.Login
+namespace NewsBlog.Views.User
 {
-    public class SuccessfulLoginUserModel : PageModel
+    public class SuccessfulRegistrationModel : PageModel
     {
         public void OnGet()
         {

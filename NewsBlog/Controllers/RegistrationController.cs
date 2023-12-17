@@ -28,39 +28,31 @@ namespace NewsBlog.Controllers
             viewModel.ErrorMessage = errorMessage;
             return viewModel;
         }
-        public IActionResult SuccessfulRegistrationUser(string userName, string firstName, string lastName, string password)
+        public IActionResult SuccessfulRegistration(string userName, string firstName, string lastName, string password)
         {          
             return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password,""));
         }
-        public IActionResult InvalidRegistrationUserAlreadyExists(string userName, string firstName, string lastName, string password)
+        public IActionResult InvalidRegistration(string userName, string firstName, string lastName, string password, string errorMessage)
         {
-            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password, "Пользователь с таким логином уже сущуствует"));
-        }
-        public IActionResult InvalidRegistrationEmptyUsername(string userName, string firstName, string lastName, string password)
-        {
-            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password, "Введите логин"));
-        }
-        public IActionResult InvalidRegistrationEmptyPassword(string userName, string firstName, string lastName, string password)
-        {
-            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password, "Введите пароль"));
+            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password, errorMessage));
         }
         public IActionResult RegistrationUser(string userName, string firstName, string lastName, string password)
         {
             if (userName is null) {
-                return RedirectToAction("InvalidRegistrationEmptyUsername",
-                    new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password });
+                return RedirectToAction("InvalidRegistration",
+                    new { userName, firstName,lastName,password, ErrorMessage = "Введите логин" });
             }
             if (password is null)
             {
-                return RedirectToAction("InvalidRegistrationEmptyPassword",
-                    new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password });
+                return RedirectToAction("InvalidRegistration",
+                    new { userName, firstName,lastName, password, ErrorMessage = "Введите пароль" });
             }
             var userExists = CheckIfUserExists(this.context, userName);
             // Пользователь уже существует
             if (userExists)
             {
-                return RedirectToAction("InvalidRegistrationUserAlreadyExists",
-                    new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password });
+                return RedirectToAction("InvalidRegistration",
+                    new { userName, firstName, lastName,password, ErrorMessage = "Пользователь с таким логином уже сущуствует" });
             }
             else
             {
@@ -76,8 +68,8 @@ namespace NewsBlog.Controllers
                 });
                 this.context.SaveChanges();
                 //ViewData["userName"]= HttpContext.Session.GetString("userName");
-                return RedirectToAction("SuccessfulRegistrationUser",
-                    new { UserName = userName, FirstName = firstName, LastName = lastName, Password = password});            
+                return RedirectToAction("SuccessfulRegistration",
+                    new { userName, firstName, lastName, Password = password});            
             }
         }
         private bool CheckIfUserExists(DbContext context, string userName)

@@ -1,4 +1,4 @@
 ﻿@model IEnumerable<NewsBlog.ViewModel.CategoryViewModel>
 @{
 }
-@Html.Partial("BuilderNews", Model)
+@await Html.PartialAsync("BuilderNews", Model)

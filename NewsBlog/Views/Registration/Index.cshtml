@@ -8,4 +8,4 @@
     model.Password = string.Empty;
     model.ErrorMessage = string.Empty;
 }
-@Html.Partial("_RegistrationPartial", model)
+@await Html.PartialAsync("_RegistrationPartial", model)

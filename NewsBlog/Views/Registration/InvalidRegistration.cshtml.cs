@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace NewsBlog.Views.User
 {
-    public class InvalidRegistrationEmptyUsernameModel : PageModel
+    public class InvalidRegistrationModel : PageModel
     {
         public void OnGet()
         {

@@ -8,8 +8,8 @@ namespace NewsBlog.ViewModel
         public int CommentId { get; set; }
         public DateTime Published { get; set; }
         public string? Content { get; set; }
-        public string Author { get; set; }
-        public News News { get; set; }
+        public string Author { get; set; } = string.Empty;
+        public News News { get; set; } = new News();
     }
    
 }

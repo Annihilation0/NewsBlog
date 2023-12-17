@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace NewsBlog.Views.Login
 {
-    public class InvalidLoginEmptyPasswordModel : PageModel
+    public class InvalidLoginModel : PageModel
     {
         public void OnGet()
         {

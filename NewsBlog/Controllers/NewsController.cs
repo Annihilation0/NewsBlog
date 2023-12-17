@@ -31,10 +31,10 @@ namespace NewsBlog.Controllers
         public IActionResult BuilderNews(string? errorMessage)
         {
             var categories = context.Categories.Select(categories => new CategoryViewModel
-                {
-                    CategoryId = categories.CategoryId,
-                    CategoryName = categories.CategoryName,
-                    ErrorMessage = errorMessage ?? string.Empty
+            {
+                CategoryId = categories.CategoryId,
+                CategoryName = categories.CategoryName,
+                ErrorMessage = errorMessage ?? string.Empty
             });
             return View(categories);
         }
@@ -145,7 +145,7 @@ namespace NewsBlog.Controllers
                .Where(news => news.NewsId.Equals(newsId)).First();
             var comments = SearchCommentOfNews(newsId);
 
-            if ((user == null)||(news == null)) return PartialView("ReadNews", new { news, comments}); 
+            if ((user == null) || (news == null)) return PartialView("ReadNews", new { news, comments });
 
             AddComment(user, news, commentText);
 
@@ -170,7 +170,7 @@ namespace NewsBlog.Controllers
                {
                    CategoryName = category.CategoryName,
                });
-            return RedirectToAction("ShowAddCategory", new {string.Empty});
+            return RedirectToAction("ShowAddCategory", new { string.Empty });
         }
         private IQueryable<CommentViewModel> SearchCommentOfNews(int newsId)
         {
@@ -322,16 +322,16 @@ namespace NewsBlog.Controllers
                 })
                 .Where(news => (news.Author.UserName ?? string.Empty).ToLower().Equals(userName.ToLower()))
                 .Select(news => new NewsViewModel
-                 {
-                     NewsId = news.NewsId,
-                     Title = news.Title,
-                     Content = news.Content,
-                     Published = news.Published,
-                     Author = news.Author.FirstName + " " + news.Author.LastName,
-                     ResourcePath = news.ResourcePath,
-                     Categories = news.Categories.Select(category => category.CategoryName).ToList(),
-                     Comments = news.Comments,
-                 });
+                {
+                    NewsId = news.NewsId,
+                    Title = news.Title,
+                    Content = news.Content,
+                    Published = news.Published,
+                    Author = news.Author.FirstName + " " + news.Author.LastName,
+                    ResourcePath = news.ResourcePath,
+                    Categories = news.Categories.Select(category => category.CategoryName).ToList(),
+                    Comments = news.Comments,
+                });
 
             return news;
         }
@@ -378,21 +378,20 @@ namespace NewsBlog.Controllers
 
             context.SaveChanges();
         }
-        private Category GetCategoryById(int categoryId)
+        private Category? GetCategoryById(int categoryId)
         {
             var categories = context.Categories;
             var res = categories.Select(categories => categories)
                 .Where(categories => categories.CategoryId.Equals(categoryId)).FirstOrDefault();
             return res;
         }
-
         private void AddCategoryName(string categoryName)
         {
 
             if (context.Categories.Select(c => c)
-                .Where(c => c.CategoryName.ToLower().Equals(categoryName.ToLower())).FirstOrDefault() != null) return; 
+                .Where(c => c.CategoryName.ToLower().Equals(categoryName.ToLower())).FirstOrDefault() != null) return;
             context.Categories.Add(new Category
-            {             
+            {
                 CategoryName = categoryName
             });
 

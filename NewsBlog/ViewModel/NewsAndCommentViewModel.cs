@@ -2,8 +2,8 @@
 {
     public class NewsAndCommentViewModel
     {
-        public NewsViewModel News { get; set; }
-        public IQueryable<CommentViewModel> Comments { get; set; }
+        public NewsViewModel News { get; set; } = new NewsViewModel();
+        public IQueryable<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>().AsQueryable();
     }
 
 

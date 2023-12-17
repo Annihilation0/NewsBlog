@@ -17,30 +17,16 @@ namespace NewsBlog.Controllers
         {
             return View();
         }
-        //Ошибка - пустое поле с логином
-        public IActionResult InvalidLoginEmptyUsername(string userName, string password)
+        //Ошибка
+        public IActionResult InvalidLogin(string userName, string password, string errorMessage)
         {
-            return PartialView(FillLoginDataUserViewModel(userName, password, "Введите логин"));
+            return PartialView(FillLoginDataUserViewModel(userName, password, errorMessage));
         }
-        //Ошибка - пустое поле с паролем
-        public IActionResult InvalidLoginEmptyPassword(string userName, string password)
-        {
-            return PartialView(FillLoginDataUserViewModel(userName, password, "Введите пароль"));
-        }
-        //Ошибка - пользователь с таким логином не найден
-        public IActionResult InvalidLoginUserDoesntExists(string userName, string password)
-        {
-            return PartialView(FillLoginDataUserViewModel(userName, password, "Пользователь не найден"));
-        }
-        //Ошибка - неверный пароль
-        public IActionResult InvalidLoginUserInvalidPassword(string userName, string password)
-        {
-            return PartialView(FillLoginDataUserViewModel(userName, password, "Неверный пароль"));
-        }
+   
         //Успешный вход
-        public IActionResult SuccessfulLoginUser(string userName, string password)
+        public IActionResult SuccessfulLogin(string userName, string password)
         {
-            var user = GetUserByUsername(context, userName);
+            var user = GetUserByUsername(userName);
             string firstName = user.FirstName ?? string.Empty;
             string lastName = user.LastName ?? string.Empty;
 
@@ -54,29 +40,29 @@ namespace NewsBlog.Controllers
         {
             if (userName is null)
             {
-                return RedirectToAction("InvalidLoginEmptyUsername",
-                    new { UserName = userName, Password = password });
+                return RedirectToAction("InvalidLogin",
+                    new { userName, password, ErrorMessage = "Введите логин"});
             }
             if (password is null)
             {
-                return RedirectToAction("InvalidLoginEmptyPassword",
-                    new { UserName = userName, Password = password });
+                return RedirectToAction("InvalidLogin",
+                    new { userName, password, ErrorMessage = "Введите пароль" });
             }
-            bool userExists = CheckIfUserExists(this.context, userName);
+            bool userExists = CheckIfUserExists(userName);
             // пользователь не найден
             if (!userExists)
             {
-                return RedirectToAction("InvalidLoginUserDoesntExists",
-                    new { UserName = userName, Password = password });
+                return RedirectToAction("InvalidLogin",
+                    new { userName, password, ErrorMessage = "Пользователь не найден" });
             }
             bool isLoginSuccessful = IsLoginSuccessful(userName, password);
             if (!isLoginSuccessful)
             {
-                return RedirectToAction("InvalidLoginUserInvalidPassword",
-                    new { UserName = userName, Password = password });
+                return RedirectToAction("InvalidLogin",
+                    new { userName, password, ErrorMessage = "Неверный пароль" });
             }
-            return RedirectToAction("SuccessfulLoginUser",
-                    new { UserName = userName, Password = password });
+            return RedirectToAction("SuccessfulLogin",
+                    new {userName, password });
         }
         private LoginDataUserViewModel FillLoginDataUserViewModel(string userName, string password, string error)
         {
@@ -85,7 +71,7 @@ namespace NewsBlog.Controllers
             viewModel.Password = password;
             viewModel.ErrorMessage = error;
 
-            var user = GetUserByUsername(context, userName);
+            var user = GetUserByUsername(userName);
             if (user != null)
             {
                 viewModel.FirstName = (user.FirstName != null) ? user.FirstName : string.Empty;
@@ -93,18 +79,20 @@ namespace NewsBlog.Controllers
             }
             return viewModel;
         }
-        private bool CheckIfUserExists(DbContext context, string userName)
+        private bool CheckIfUserExists(string userName)
         {
             var users = context.Users;
             if(users == null) return false;
-            var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).First();
+            var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).FirstOrDefault();
             if(res == null) return false;
             return true;
         }
-        private User? GetUserByUsername(DbContext context, string userName)
+        private User? GetUserByUsername(string userName)
         {
+            if (string.IsNullOrEmpty(userName)) return null;
             var users = context.Users;
-            var res = users.Select(user => user).Where(user => (user.UserName ?? string.Empty).ToLower().Equals(userName.ToLower())).FirstOrDefault();
+            var lowerUserName = userName.ToLower();
+            var res = users.FirstOrDefault(user => ((user.UserName ?? string.Empty).ToLower() == lowerUserName));
             return res;
         }
         private bool IsLoginSuccessful(string userName, string password)
