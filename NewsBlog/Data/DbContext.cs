@@ -17,8 +17,16 @@ public class DbContext : Microsoft.EntityFrameworkCore.DbContext
          Здесь можно настроить сложные связи, индексы и т.д.
         Например, для News, Categories и Comment
         --------------------------------------*/
-        // Связь многие ко многим между News и Categories
-        modelBuilder.Entity<News>()
+    // Enum тип RoleName преобразуется в string   
+    modelBuilder.Entity<Role>()
+            .Property(r => r.RoleName)
+            .HasConversion(
+                v => v.ToString(),
+                v => (RoleType)Enum.Parse(typeof(RoleType), v)
+            );
+    
+    // Связь многие ко многим между News и Categories
+    modelBuilder.Entity<News>()
             .HasMany(n => n.Categories)
             .WithMany(c => c.News)
             .UsingEntity(j => j.ToTable("News_Categories"));

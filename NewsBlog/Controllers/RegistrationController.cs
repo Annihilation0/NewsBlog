@@ -30,7 +30,7 @@ namespace NewsBlog.Controllers
         }
         public IActionResult SuccessfulRegistration(string userName, string firstName, string lastName, string password)
         {          
-            return PartialView(FillLoginDataUserViewModel(userName, firstName, lastName, password,""));
+            return RedirectToAction("SuccessfulLogin", "Login", new { userName, password });
         }
         public IActionResult InvalidRegistration(string userName, string firstName, string lastName, string password, string errorMessage)
         {
@@ -64,7 +64,7 @@ namespace NewsBlog.Controllers
                     LastName = lastName,
                     PasswordHash = PasswordHashing.GetHashString(password),
                     PasswordSalt = PasswordSaltGenerator.GenerateSalt(saltSize),
-                    Role = context.Roles.Where(role => role.RoleName == "User").First(),
+                    Role = context.Roles.Where(role => role.RoleName == RoleType.User).First(),
                 });
                 this.context.SaveChanges();
                 //ViewData["userName"]= HttpContext.Session.GetString("userName");

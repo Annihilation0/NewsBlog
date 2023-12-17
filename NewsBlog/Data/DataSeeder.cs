@@ -30,12 +30,12 @@ namespace NewsBlog.NewsBlogData
 
             context.Roles.Add(new Role
             {
-                RoleName = "User",
+                RoleName = RoleType.User,
             });
 
             context.Roles.Add(new Role
             {
-                RoleName = "SuperUser",
+                RoleName = RoleType.Admin,
             });
 
             context.SaveChanges();
@@ -88,7 +88,7 @@ namespace NewsBlog.NewsBlogData
                     FirstName = "Обсуждаем книги и слова",
                     PasswordHash = PasswordHashing.GetHashString("password1!"),
                     PasswordSalt = PasswordSaltGenerator.GenerateSalt(saltSize),
-                    Role = context.Roles.Where(role => role.RoleName == "User").First(),
+                    Role = context.Roles.Where(role => role.RoleName == RoleType.User).First(),
                 },
                 Categories = new List<Category>
                 {
@@ -110,7 +110,7 @@ namespace NewsBlog.NewsBlogData
                     FirstName = "Записки программиста",
                     PasswordHash = PasswordHashing.GetHashString("password1!"),
                     PasswordSalt = PasswordSaltGenerator.GenerateSalt(saltSize),
-                    Role = context.Roles.Where(role => role.RoleName == "User").First(),
+                    Role = context.Roles.Where(role => role.RoleName == RoleType.User).First(),
                 },
                 Categories = new List<Category>
                 {
