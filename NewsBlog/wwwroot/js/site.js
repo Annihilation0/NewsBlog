@@ -193,10 +193,27 @@ function AddNewsCategory(categoryId) {
     else
         categories.value += "," + categoryId;
 }
-
-/*
-function ToogleClassCategory(categoryName) {
-    var category = document.getElementById("category_" + categoryName);
-    category.classList.toggle("blog-category-selected");
+function ShowBuilderCategory()
+{
+    document.getElementById("builderCategory").style.display = "inline";
 }
-*/
+function AddCategory() {
+    var categoryName = document.getElementById("builderCategory").value;
+    if (categoryName == '') return;
+
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/News/AddCategory",
+        // Attach the value to a parameter called search
+        data: {
+            categoryName
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
+
+}

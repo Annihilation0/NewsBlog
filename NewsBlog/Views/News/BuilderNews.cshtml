@@ -24,6 +24,11 @@
                 {
                     <a id="category_@category.CategoryId" class="blog-category" OnClick="AddNewsCategory('@category.CategoryId')">@category.CategoryName</a>
                 }
+
+                <div style="margin-top: 0px;display: inline;">
+                <input id="builderCategory" type="text" class="blog-text" style="display:none;"></input>
+                <a id="showBuilderCategory" OnClick="ShowBuilderCategory(); AddCategory();"class="read-more" style="border-radius: 20px;padding: 0px; margin: 0px; width: 25px;height: 25px;">+</a>
+                </div>
                 <p id="selectedCategories" value="" style="display: none; visibility:hidden"></p>
                 <textarea rows="15" class="nav-link text-dark" style="@style" id="newsText" placeholder="Текст новости" multiple="multiple"></textarea>
                 <div class="form-group file-area" style="@style">

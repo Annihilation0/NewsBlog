@@ -4,6 +4,7 @@ using NewsBlog.Models;
 using NewsBlog.NewsBlogData;
 using NewsBlog.ViewModel;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 
 namespace NewsBlog.Controllers
 {
@@ -37,6 +38,26 @@ namespace NewsBlog.Controllers
             });
             return View(categories);
         }
+        public IActionResult InvalidBuilderNews(string? errorMessage)
+        {
+            var categories = context.Categories.Select(categories => new CategoryViewModel
+            {
+                CategoryId = categories.CategoryId,
+                CategoryName = categories.CategoryName,
+                ErrorMessage = errorMessage ?? string.Empty
+            });
+            return PartialView(categories);
+        }
+        public IActionResult ShowAddCategory(string? errorMessage)
+        {
+            var categories = context.Categories.Select(categories => new CategoryViewModel
+            {
+                CategoryId = categories.CategoryId,
+                CategoryName = categories.CategoryName,
+                ErrorMessage = errorMessage ?? string.Empty
+            });
+            return PartialView(categories);
+        }
         public IActionResult MyNews()
         {
             string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
@@ -49,17 +70,17 @@ namespace NewsBlog.Controllers
             if (string.IsNullOrWhiteSpace(newsTitle))
             {
                 errorMessage = "Заполните заголовок новости";
-                return RedirectToAction("BuilderNews", new { errorMessage });
+                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
             }
             if (string.IsNullOrWhiteSpace(newsCategories))
             {
                 errorMessage = "Выберите хотя бы одну категорию";
-                return RedirectToAction("BuilderNews", new { errorMessage });
+                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
             }
             if (string.IsNullOrWhiteSpace(newsText))
             {
                 errorMessage = "Заполните текст новости";
-                return RedirectToAction("BuilderNews", new { errorMessage });
+                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
             }
             string[] newsCategoriesArr = newsCategories.Split(',');
             List<Category> categories = new List<Category>();
@@ -140,6 +161,16 @@ namespace NewsBlog.Controllers
             searchingNews.Comments = SearchCommentOfNews(searchingNews.News.NewsId);
 
             return PartialView(searchingNews);
+        }
+        public IActionResult AddCategory(string categoryName)
+        {
+            AddCategoryName(categoryName);
+            var categories = context.Categories
+               .Select(category => new CategoryViewModel
+               {
+                   CategoryName = category.CategoryName,
+               });
+            return RedirectToAction("ShowAddCategory", new {string.Empty});
         }
         private IQueryable<CommentViewModel> SearchCommentOfNews(int newsId)
         {
@@ -353,6 +384,19 @@ namespace NewsBlog.Controllers
             var res = categories.Select(categories => categories)
                 .Where(categories => categories.CategoryId.Equals(categoryId)).FirstOrDefault();
             return res;
+        }
+
+        private void AddCategoryName(string categoryName)
+        {
+
+            if (context.Categories.Select(c => c)
+                .Where(c => c.CategoryName.ToLower().Equals(categoryName.ToLower())).FirstOrDefault() != null) return; 
+            context.Categories.Add(new Category
+            {             
+                CategoryName = categoryName
+            });
+
+            context.SaveChanges();
         }
     }
 }
