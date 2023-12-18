@@ -14,10 +14,10 @@ namespace NewsBlog.Controllers
         public IActionResult Index()
         {
             HttpContext.Session.SetString("userName", "");
-            var news = getAllNews(context);
+            var news = GetAllNews(context);
             return View("../News/AllNews", news);
         }
-        private IQueryable<NewsViewModel> getAllNews(DbContext context)
+        private IQueryable<NewsViewModel> GetAllNews(DbContext context)
         {
             var news = context.News
                 .Include(news => news.Categories)

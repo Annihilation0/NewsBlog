@@ -9,6 +9,9 @@ namespace NewsBlog.Controllers
     public class NewsController : Controller
     {
         private readonly DbContext context;
+        private const string BlankTitleError = "Заполните заголовок новости";
+        private const string NoCategoryError = "Выберите хотя бы одну категорию";
+        private const string BlankTextError = "Заполните текст новости";
         public NewsController(DbContext context)
         {
             this.context = context;
@@ -23,7 +26,7 @@ namespace NewsBlog.Controllers
         }
         public IActionResult AllNews()
         {
-            var news = getAllNews();
+            var news = GetAllNews();
             return View(news);
         }
         public IActionResult BuilderNews(string? errorMessage)
@@ -38,7 +41,7 @@ namespace NewsBlog.Controllers
         }
         public IActionResult GetDataNews(int newsId)
         {
-            var news = SearchNewsById(newsId).FirstOrDefault();
+            var news = GetNewsById(newsId).FirstOrDefault();
             var categories = context.Categories.Select(categories => new CategoryViewModel
             {
                 CategoryId = categories.CategoryId,
@@ -51,7 +54,7 @@ namespace NewsBlog.Controllers
             newsAndCategories.Categories = categories;
             return PartialView(newsAndCategories);
         }
-        public IActionResult UpdateNews(string newsTitle, string newsCategories, string newsText, string path,int newsId)
+        public IActionResult UpdateNews(string newsTitle, string newsCategories, string newsText, string path, int newsId)
         {
             string errorMessage = "";
             if (string.IsNullOrWhiteSpace(newsTitle))
@@ -75,12 +78,14 @@ namespace NewsBlog.Controllers
             {
                 categories.Add(GetCategoryById(Int32.Parse(categoryId)));
             }
+ 
             string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
             var author = GetUserByUsername(userName);
 
             UpdateNews(newsTitle, newsText, categories, author, path, newsId);
-            var news = getUserNews(userName);
+            var news = GetUserNews(userName);
             return PartialView("MyNews", news);
+  
         }
         public IActionResult InvalidBuilderNews(string? errorMessage)
         {
@@ -105,40 +110,55 @@ namespace NewsBlog.Controllers
         public IActionResult MyNews()
         {
             string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
-            var news = getUserNews(userName);
+            var news = GetUserNews(userName);
             return View(news);
         }
         public IActionResult AddNews(string newsTitle, string newsCategories, string newsText, string path)
-        {
-            string errorMessage = "";
-            if (string.IsNullOrWhiteSpace(newsTitle))
+        {           
+            string errorMessage = ValidateNewsInput(newsTitle, newsCategories, newsText);
+            if (!string.IsNullOrEmpty(errorMessage))
             {
-                errorMessage = "Заполните заголовок новости";
-                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
+                return RedirectToAction(nameof(InvalidBuilderNews), new { errorMessage });
             }
-            if (string.IsNullOrWhiteSpace(newsCategories))
-            {
-                errorMessage = "Выберите хотя бы одну категорию";
-                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
-            }
-            if (string.IsNullOrWhiteSpace(newsText))
-            {
-                errorMessage = "Заполните текст новости";
-                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
-            }
-            string[] newsCategoriesArr = newsCategories.Split(',');
-            List<Category> categories = new List<Category>();
-            foreach (string categoryId in newsCategoriesArr)
-            {
-                categories.Add(GetCategoryById(Int32.Parse(categoryId)));
-            }
+
+            List<Category> categories = ParseCategories(newsCategories);
             string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
             var author = GetUserByUsername(userName);
             AddNews(newsTitle, newsText, categories, author, path);
 
-            var news = getUserNews(userName);
+            var news = GetUserNews(userName);
 
             return PartialView("MyNews", news);
+        }
+        private string ValidateNewsInput(string title, string categories, string text)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                return BlankTitleError;
+            }
+            if (string.IsNullOrWhiteSpace(categories))
+            {
+                return NoCategoryError;
+            }
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return BlankTextError;
+            }
+
+            return string.Empty;
+        }
+        private List<Category> ParseCategories(string categories)
+        {
+            var categoryIds = categories.Split(',');
+            var categoryList = new List<Category>();
+            foreach (var categoryId in categoryIds)
+            {
+                if (int.TryParse(categoryId, out int id))
+                {
+                    categoryList.Add(GetCategoryById(id));
+                }
+            }
+            return categoryList;
         }
         public IActionResult DeleteNews(int newsId)
         {
@@ -147,7 +167,7 @@ namespace NewsBlog.Controllers
             context.SaveChanges();
 
             string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
-            var news = getUserNews(userName);
+            var news = GetUserNews(userName);
             return PartialView("MyNews", news);
         }
         /*--------------------------------------
@@ -156,12 +176,12 @@ namespace NewsBlog.Controllers
         --------------------------------------*/
         public IActionResult SearchNews(string search)
         {
-            var searchingNews = SearchNewsByTitle(search);
+            var searchingNews = GetNewsByTitle(search);
             return PartialView(searchingNews);
         }
         public IActionResult SearchByCategoryNews(string category)
         {
-            var searchingNews = SearchNewsViewModelByCategory(category);
+            var searchingNews = GetNewsByCategory(category);
             return PartialView(searchingNews);
         }
         /*--------------------------------------
@@ -186,14 +206,14 @@ namespace NewsBlog.Controllers
                    Categories = news.Categories,
                    Comments = news.Comments,
                })
-               .Where(news => news.NewsId.Equals(newsId)).First();
-            var comments = SearchCommentOfNews(newsId);
+               .Where(news => news.NewsId.Equals(newsId)).FirstOrDefault();
+            var comments = GetCommentOfNews(newsId);
 
             if ((user == null) || (news == null)) return PartialView("ReadNews", new { news, comments });
 
             AddComment(user, news, commentText);
 
-            comments = SearchCommentOfNews(newsId);
+            comments = GetCommentOfNews(newsId);
 
             return RedirectToAction("ReadNews", new { newsId });
         }
@@ -201,8 +221,8 @@ namespace NewsBlog.Controllers
         {
             var searchingNews = new NewsAndCommentViewModel();
 
-            searchingNews.News = SearchNewsById(newsId).First();
-            searchingNews.Comments = SearchCommentOfNews(searchingNews.News.NewsId);
+            searchingNews.News = GetNewsById(newsId).First();
+            searchingNews.Comments = GetCommentOfNews(searchingNews.News.NewsId);
 
             return PartialView(searchingNews);
         }
@@ -216,7 +236,7 @@ namespace NewsBlog.Controllers
                });
             return RedirectToAction("ShowAddCategory", new { string.Empty });
         }
-        private IQueryable<CommentViewModel> SearchCommentOfNews(int newsId)
+        private IQueryable<CommentViewModel> GetCommentOfNews(int newsId)
         {
             var res = context.Comments
                .Include(comment => comment.Author)
@@ -236,7 +256,7 @@ namespace NewsBlog.Controllers
         Получение новости из контекста базы данных
         по идентификатору newsId
         --------------------------------------*/
-        private IQueryable<NewsViewModel> SearchNewsById(int newsId)
+        private IQueryable<NewsViewModel> GetNewsById(int newsId)
         {
             var res = context.News
                .Include(news => news.Categories)
@@ -259,7 +279,7 @@ namespace NewsBlog.Controllers
         Получение всех новостей из контекста базы данных,
         заголовок которых содержит в себе строку search
         --------------------------------------*/
-        private IQueryable<NewsViewModel> SearchNewsByTitle(string search)
+        private IQueryable<NewsViewModel> GetNewsByTitle(string search)
         {
             search ??= "";
             var res = context.News
@@ -280,7 +300,7 @@ namespace NewsBlog.Controllers
                .Where(news => news.Title.ToLower().Contains(search.ToLower()));
             return res;
         }
-        private IQueryable<NewsViewModel> SearchNewsViewModelByCategory(string category)
+        private IQueryable<NewsViewModel> GetNewsByCategory(string category)
         {
             category ??= "";
             var res = context.News
@@ -300,33 +320,10 @@ namespace NewsBlog.Controllers
                .Where(news => news.Categories.Contains(category));
             return res;
         }
-        private IQueryable<News>? SearchNewsByCategory(string category)
-        {
-            category ??= "";
-            var categoryModel = context.Categories
-                .Select(c => c).Where(c => c.CategoryName.Equals(category)).FirstOrDefault();
-            if (categoryModel == null) return null;
-            var res = context.News
-               .Include(news => news.Categories)
-               .Include(news => news.Author)
-               .Select(news => new News
-               {
-                   NewsId = news.NewsId,
-                   Title = news.Title,
-                   Content = news.Content,
-                   Published = news.Published,
-                   Author = news.Author,
-                   ResourcePath = news.ResourcePath,
-                   Categories = news.Categories,
-                   Comments = news.Comments
-               })
-               .Where(news => news.Categories.Contains(categoryModel));
-            return res;
-        }
         /*--------------------------------------
         Получение всех новостей 
         --------------------------------------*/
-        private IQueryable<NewsViewModel> getAllNews()
+        private IQueryable<NewsViewModel> GetAllNews()
         {
             var news = context.News
                 .Include(news => news.Categories)
@@ -348,7 +345,7 @@ namespace NewsBlog.Controllers
         /*--------------------------------------
         Получение новостей пользователя
         --------------------------------------*/
-        private IQueryable<NewsViewModel> getUserNews(string userName)
+        private IQueryable<NewsViewModel> GetUserNews(string userName)
         {
             var news = context.News
                 .Include(news => news.Categories)

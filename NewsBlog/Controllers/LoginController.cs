@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
 using NewsBlog.NewsBlogData;
 using NewsBlog.ViewModel;
