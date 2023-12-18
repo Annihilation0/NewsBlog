@@ -1,0 +1,52 @@
+﻿@model NewsBlog.ViewModel.NewsAndCommentViewModel
+@{
+    string style = "width: 100%; margin-top:20px; ";
+    string classFile = "file-dummy";
+    string textFile = "Выберите файл";
+    string errorMessage = "";
+
+    var news = Model.News;
+    string title = news.Title;
+    string content = news.Content;
+    IQueryable<NewsBlog.ViewModel.CategoryViewModel> categories = Model.Categories;
+}
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="error-message">
+            @errorMessage
+        </div>
+    }
+    <div class="blog-comment-cards">
+        <div class="blog-comment-card">
+            <div class="blog-comment-content">
+                <textarea rows="1" class="nav-link text-dark" style="@style margin-bottom:20px;" id="newsTitle" placeholder="Заголовок" multiple="multiple">@title</textarea>
+
+                @foreach (var category in categories)
+                {
+                    <a id="category_@category.CategoryId" class="blog-category" OnClick="AddNewsCategory('@category.CategoryId')">@category.CategoryName</a>
+                }
+
+                <div style="margin-top: 0px;display: inline;">
+                    <input id="builderCategory" type="text" class="blog-text" style="display:none;" />
+                    <a id="showBuilderCategory" OnClick="ShowBuilderCategory(); AddCategory();" class="read-more" style="border-radius: 20px;padding: 0px; margin: 0px; width: 25px;height: 25px;">+</a>
+                </div>
+                <p id="selectedCategories" value="" style="display: none; visibility:hidden"></p>
+                <textarea rows="15" class="nav-link text-dark" style="@style" id="newsText" placeholder="Текст новости" multiple="multiple">@content</textarea>
+                <div class="form-group file-area" style="@style">
+                    <input onchange="changeClass()" style="width: 1050px; height: 112px;" type="file" name="newsImage" id="newsImage" required="required" multiple="multiple" accept="image/*" />
+                    <div id="fileDiv" class="@classFile">
+                        <div id="fileText">@textFile</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a rows="3" class="read-more" style="width: 100%" id="addComment" OnClick="UpdateNews(@news.NewsId)">Обновить новость</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

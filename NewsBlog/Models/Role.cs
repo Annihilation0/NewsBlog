@@ -12,7 +12,7 @@ namespace NewsBlog.Models
 
     public enum RoleType
     {
-        User, // будет сохранено в базе данных как 0
-        Admin // будет сохранено как 1
+        User, 
+        Admin 
     }
 }

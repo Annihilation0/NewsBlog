@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NewsBlog.Models;
-using NewsBlog.NewsBlogData;
 using NewsBlog.ViewModel;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
+
 
 namespace NewsBlog.Controllers
 {
@@ -37,6 +35,52 @@ namespace NewsBlog.Controllers
                 ErrorMessage = errorMessage ?? string.Empty
             });
             return View(categories);
+        }
+        public IActionResult GetDataNews(int newsId)
+        {
+            var news = SearchNewsById(newsId).FirstOrDefault();
+            var categories = context.Categories.Select(categories => new CategoryViewModel
+            {
+                CategoryId = categories.CategoryId,
+                CategoryName = categories.CategoryName,
+                ErrorMessage = string.Empty
+            });
+
+            var newsAndCategories = new NewsAndCommentViewModel();
+            newsAndCategories.News = news ?? new NewsViewModel();
+            newsAndCategories.Categories = categories;
+            return PartialView(newsAndCategories);
+        }
+        public IActionResult UpdateNews(string newsTitle, string newsCategories, string newsText, string path,int newsId)
+        {
+            string errorMessage = "";
+            if (string.IsNullOrWhiteSpace(newsTitle))
+            {
+                errorMessage = "Заполните заголовок новости";
+                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
+            }
+            if (string.IsNullOrWhiteSpace(newsCategories))
+            {
+                errorMessage = "Выберите хотя бы одну категорию";
+                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
+            }
+            if (string.IsNullOrWhiteSpace(newsText))
+            {
+                errorMessage = "Заполните текст новости";
+                return RedirectToAction("InvalidBuilderNews", new { errorMessage });
+            }
+            string[] newsCategoriesArr = newsCategories.Split(',');
+            List<Category> categories = new List<Category>();
+            foreach (string categoryId in newsCategoriesArr)
+            {
+                categories.Add(GetCategoryById(Int32.Parse(categoryId)));
+            }
+            string userName = HttpContext.Session.GetString("userName") ?? string.Empty;
+            var author = GetUserByUsername(userName);
+
+            UpdateNews(newsTitle, newsText, categories, author, path, newsId);
+            var news = getUserNews(userName);
+            return PartialView("MyNews", news);
         }
         public IActionResult InvalidBuilderNews(string? errorMessage)
         {
@@ -377,6 +421,38 @@ namespace NewsBlog.Controllers
             });
 
             context.SaveChanges();
+        }
+        private void UpdateNews(string title, string content, List<Category> categories, User author, string path, int newsId)
+        {
+            if (string.IsNullOrEmpty(path))
+                path = "/css/Resources/default.jpg";
+            var newsToUpdate = context.News.Include(n => n.Categories).FirstOrDefault(news => news.NewsId.Equals(newsId));
+            if (newsToUpdate != null)
+            {
+                newsToUpdate.Title = title;
+                newsToUpdate.Content = content;
+                newsToUpdate.Published = DateTime.UtcNow;
+                newsToUpdate.ResourcePath = path;
+
+                // Очищаем существующие категории
+                newsToUpdate.Categories.Clear();
+
+                // Добавляем новые категории к новости
+                foreach (var category in categories)
+                {
+                    var categoryToAdd = context.Categories.FirstOrDefault(c => c.CategoryId == category.CategoryId);
+                    if (categoryToAdd != null)
+                    {
+                        newsToUpdate.Categories.Add(categoryToAdd);
+                    }
+                }
+
+                // Сохраняем изменения в контексте
+                context.SaveChanges();
+            }
+
+
+
         }
         private Category? GetCategoryById(int categoryId)
         {

@@ -15,7 +15,6 @@ document.getElementById('searchNews').addEventListener('keyup', function (e) {
         SearchNews()
     }, 800);
 });
-
 function SearchNews() {
     /*--------------------------------------
     Передаем строку поиска в контроллер
@@ -216,4 +215,44 @@ function AddCategory() {
         }
     });
 
+}
+function GetDataNews(newsId) {
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/News/GetDataNews",
+        // Attach the value to a parameter called search
+        data: {
+            newsId
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
+}
+function UpdateNews(newsId) {
+    let newsTitle = document.getElementById("newsTitle").value;
+    let newsCategories = document.getElementById("selectedCategories").value;
+    let newsText = document.getElementById("newsText").value;
+    let path = document.getElementById("newsImage").value.replace("C:\\fakepath\\", "/css/Resources/");
+    $.ajax({
+        type: "POST",
+        // You can use the absolute url eg www.site.com/MyControllerName/LiveTagSearch or the relative path live below  
+        url: "/News/UpdateNews",
+        // Attach the value to a parameter called search
+        data: {
+            newsTitle,
+            newsCategories,
+            newsText,
+            path,
+            newsId
+        },
+        datatype: "html",
+        success: function (data) {
+            // Insert the returned search results html into the result element 
+            $('#searchNewsResult').html(data);
+        }
+    });
 }
